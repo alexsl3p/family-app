@@ -100,9 +100,7 @@ class SupabaseService {
 
   static RealtimeChannel subscribeToTasks(
       String groupId, void Function(dynamic) onEvent) {
-    return _client
-        .channel('family_tasks_$groupId')
-        .on(
+    final channel = _client.channel('family_tasks_$groupId').on(
           RealtimeListenTypes.postgresChanges,
           ChannelFilter(
             event: '*',
@@ -111,8 +109,9 @@ class SupabaseService {
             filter: 'group_id=eq.$groupId',
           ),
           (payload, [ref]) => onEvent(payload),
-        )
-        .subscribe();
+        );
+    channel.subscribe();
+    return channel;
   }
 
   // --- Shopping Lists ---
@@ -176,9 +175,7 @@ class SupabaseService {
 
   static RealtimeChannel subscribeToShoppingItems(
       String listId, void Function(dynamic) onEvent) {
-    return _client
-        .channel('shopping_items_$listId')
-        .on(
+    final channel = _client.channel('shopping_items_$listId').on(
           RealtimeListenTypes.postgresChanges,
           ChannelFilter(
             event: '*',
@@ -187,7 +184,8 @@ class SupabaseService {
             filter: 'list_id=eq.$listId',
           ),
           (payload, [ref]) => onEvent(payload),
-        )
-        .subscribe();
+        );
+    channel.subscribe();
+    return channel;
   }
 }
