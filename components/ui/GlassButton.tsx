@@ -15,8 +15,6 @@ interface GlassButtonProps {
   style?: ViewStyle;
 }
 
-// Primary — градиентная кнопка с glow-тенью и scale-фидбеком при нажатии
-// (HIG: scale 0.97, 150ms). Ghost/danger — стеклянные.
 export function GlassButton({
   title,
   onPress,
@@ -29,7 +27,7 @@ export function GlassButton({
   const textColor =
     variant === 'primary' ? '#fff' : variant === 'danger' ? Colors.error : Colors.accent;
 
-  const content = (pressed: boolean) => (
+  const content = () => (
     <>
       {loading ? (
         <ActivityIndicator color={textColor} size="small" />
@@ -54,14 +52,14 @@ export function GlassButton({
           style,
         ]}
       >
-        {({ pressed }) => (
+        {() => (
           <LinearGradient
             colors={Colors.accentGradient}
             start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 1 }}
             style={styles.base}
           >
-            {content(pressed)}
+            {content()}
           </LinearGradient>
         )}
       </Pressable>
@@ -80,7 +78,7 @@ export function GlassButton({
         style,
       ]}
     >
-      {content(false)}
+      {content()}
     </Pressable>
   );
 }
@@ -99,22 +97,27 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     shadowColor: Colors.accent,
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 14,
-    elevation: 5,
+    shadowOpacity: 0.40,
+    shadowRadius: 16,
+    elevation: 6,
   },
   ghost: {
-    backgroundColor: Colors.glassBackground,
-    borderWidth: 1,
-    borderColor: Colors.glassBorder,
+    backgroundColor: 'rgba(255, 255, 255, 0.80)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.90)',
+    shadowColor: '#6040B8',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 3,
   },
   danger: {
     backgroundColor: Colors.errorLight,
     borderWidth: 1,
-    borderColor: 'rgba(220, 38, 38, 0.25)',
+    borderColor: 'rgba(239, 68, 68, 0.25)',
   },
   disabled: { opacity: 0.45 },
-  pressed: { transform: [{ scale: 0.97 }], opacity: 0.92 },
+  pressed: { transform: [{ scale: 0.97 }], opacity: 0.90 },
   icon: { marginRight: 8 },
   text: { fontSize: 16, fontWeight: '600', letterSpacing: -0.2 },
 });

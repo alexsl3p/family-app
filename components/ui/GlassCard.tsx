@@ -1,7 +1,5 @@
 import React from 'react';
-import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { Colors } from '@/constants/colors';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 import { Radius } from '@/constants/radius';
 
 interface GlassCardProps {
@@ -10,54 +8,39 @@ interface GlassCardProps {
   padding?: number;
 }
 
-// Liquid glass карточка: blur на iOS / rgba на Android + световая
-// кромка сверху (имитация преломления света на стекле) и двухслойная тень.
+// Soft UI card: white panel with purple-tinted soft shadow and white border highlight.
+// No blur — clean neumorphic lift against the lavender background.
 export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
-  const inner =
-    Platform.OS === 'ios' ? (
-      <BlurView intensity={45} tint="extraLight" style={[styles.inner, { padding }]}>
-        <View style={styles.topHighlight} />
-        {children}
-      </BlurView>
-    ) : (
-      <View style={[styles.inner, styles.androidInner, { padding }]}>
-        <View style={styles.topHighlight} />
-        {children}
-      </View>
-    );
-
-  return <View style={[styles.shadowWrap, style]}>{inner}</View>;
+  return (
+    <View style={[styles.card, style]}>
+      <View style={styles.topHighlight} />
+      <View style={{ padding }}>{children}</View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  shadowWrap: {
+  card: {
     borderRadius: Radius.xxl,
-    borderWidth: 1,
-    borderColor: Colors.glassBorder,
-    backgroundColor: 'rgba(255,255,255,0.4)',
+    backgroundColor: 'rgba(255, 255, 255, 0.82)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.92)',
+    shadowColor: '#6040B8',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.16,
+    shadowRadius: 22,
+    elevation: 6,
     overflow: 'hidden',
-    // мягкая глубокая тень (ключевая)
-    shadowColor: '#1E3A8A',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.10,
-    shadowRadius: 24,
-    elevation: 5,
   },
-  inner: {
-    borderRadius: Radius.xxl,
-  },
-  androidInner: {
-    backgroundColor: Colors.glassBackground,
-  },
-  // световая кромка сверху — главный признак «дорогого» стекла
+  // Top inner highlight — simulates neumorphic top-light
   topHighlight: {
     position: 'absolute',
     top: 0,
-    left: 12,
-    right: 12,
+    left: 16,
+    right: 16,
     height: 1.5,
     borderRadius: 1,
-    backgroundColor: Colors.glassHighlight,
-    opacity: 0.9,
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    opacity: 0.85,
   },
 });

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Tabs, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/colors';
@@ -34,10 +33,6 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
   const insets = useSafeAreaInsets();
   const currentRoute = state.routes[state.index]?.name;
 
-  // Плавающая «пилюля» — фирменный признак iOS liquid glass
-  const PillWrapper = Platform.OS === 'ios' ? BlurView : View;
-  const pillProps = Platform.OS === 'ios' ? { intensity: 70, tint: 'extraLight' as const } : {};
-
   return (
     <>
       {fabOpen && (
@@ -65,7 +60,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
 
       <View style={[styles.barArea, { paddingBottom: Math.max(insets.bottom, 12) }]}>
         <View style={styles.pillShadow}>
-          <PillWrapper {...pillProps} style={styles.pill}>
+          <View style={styles.pill}>
             <View style={styles.pillHighlight} />
             {TABS.map((tab) => {
               if (!tab) {
@@ -116,7 +111,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
                 </TouchableOpacity>
               );
             })}
-          </PillWrapper>
+          </View>
         </View>
       </View>
     </>
@@ -142,10 +137,10 @@ const styles = StyleSheet.create({
   },
   pillShadow: {
     borderRadius: 34,
-    shadowColor: '#1E3A8A',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.16,
-    shadowRadius: 28,
+    shadowColor: '#6040B8',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.20,
+    shadowRadius: 24,
     elevation: 10,
   },
   pill: {
@@ -154,9 +149,9 @@ const styles = StyleSheet.create({
     borderRadius: 34,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    backgroundColor: Platform.OS === 'ios' ? 'rgba(255,255,255,0.55)' : Colors.tabBar,
-    borderWidth: 1,
-    borderColor: Colors.glassBorder,
+    backgroundColor: Colors.tabBar,
+    borderWidth: 1.5,
+    borderColor: Colors.tabBarBorder,
     overflow: 'hidden',
   },
   pillHighlight: {
@@ -197,21 +192,21 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(15, 23, 42, 0.35)',
+    backgroundColor: 'rgba(30, 22, 72, 0.30)',
     justifyContent: 'flex-end',
     zIndex: 10,
   },
   fabMenu: {
     marginHorizontal: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.97)',
+    backgroundColor: 'rgba(255, 255, 255, 0.96)',
     borderRadius: 24,
-    borderWidth: 1,
-    borderColor: Colors.glassBorder,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.92)',
     padding: 6,
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.18,
-    shadowRadius: 32,
+    shadowColor: '#6040B8',
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.20,
+    shadowRadius: 28,
     elevation: 12,
   },
   fabMenuItem: { flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12 },
