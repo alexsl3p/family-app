@@ -30,114 +30,133 @@ class HomeScreen extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '$greeting, семья! 👋',
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '$greeting! 👋',
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimary,
+                              letterSpacing: -0.5,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          family.groupName ?? 'Загрузка...',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: AppColors.textSecondary,
+                          const SizedBox(height: 2),
+                          Text(
+                            family.groupName ?? 'Загрузка...',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    const SizedBox(width: 12),
                     _InviteCodeChip(code: family.inviteCode ?? ''),
                   ],
                 ),
                 const SizedBox(height: 24),
-                // Members
-                SizedBox(
-                  height: 90,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: family.members.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (_, i) {
-                      final m = family.members[i];
-                      final myTasks = tasks.tasksForMember(m.id).length;
-                      final isMe = m.id == auth.memberId;
-                      return _MemberCard(
-                          member: m, taskCount: myTasks, isMe: isMe);
-                    },
+
+                // Members horizontal row
+                if (family.members.isNotEmpty) ...[
+                  SizedBox(
+                    height: 96,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: family.members.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 10),
+                      itemBuilder: (_, i) {
+                        final m = family.members[i];
+                        final myTasks = tasks.tasksForMember(m.id).length;
+                        final isMe = m.id == auth.memberId;
+                        return _MemberCard(
+                            member: m, taskCount: myTasks, isMe: isMe);
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
+                  const SizedBox(height: 24),
+                ],
+
                 // Stats row
                 Row(
                   children: [
                     Expanded(
                       child: _StatCard(
-                        icon: Icons.check_circle_outline_rounded,
+                        icon: '📋',
                         label: 'Задач',
                         value: '${tasks.pending.length}',
-                        color: AppColors.primary,
+                        gradientColors: const [Color(0xFF6E5FFF), Color(0xFF9B8FFF)],
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: _StatCard(
-                        icon: Icons.shopping_cart_outlined,
+                        icon: '🛒',
                         label: 'Списков',
                         value: '${shopping.lists.length}',
-                        color: AppColors.accent,
+                        gradientColors: const [Color(0xFF3DCFCF), Color(0xFF5DB8FF)],
                       ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: _StatCard(
-                        icon: Icons.people_outline_rounded,
+                        icon: '👥',
                         label: 'Членов',
                         value: '${family.members.length}',
-                        color: AppColors.warning,
+                        gradientColors: const [Color(0xFFFF6B9D), Color(0xFFD87BFF)],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
+
                 // Today's tasks
-                if (tasks.groupedByPeriod['Сегодня'] != null) ...[
-                  _SectionTitle(
-                      title: 'Дела на сегодня',
-                      count: tasks.groupedByPeriod['Сегодня']!.length),
+                if (tasks.groupedByPeriod['Сегодня'] != null &&
+                    tasks.groupedByPeriod['Сегодня']!.isNotEmpty) ...[
+                  _SectionHeader(
+                    title: 'Дела на сегодня',
+                    count: tasks.groupedByPeriod['Сегодня']!.length,
+                  ),
                   const SizedBox(height: 12),
-                  ...tasks.groupedByPeriod['Сегодня']!.take(3).map((t) {
+                  ...tasks.groupedByPeriod['Сегодня']!.take(4).map((t) {
                     final assignee = t.assignedTo != null
                         ? family.memberById(t.assignedTo!)
                         : null;
+                    final memberColor = assignee != null
+                        ? Color(int.parse(
+                            assignee.color.replaceFirst('#', '0xFF')))
+                        : AppColors.primary;
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: GlassCard(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 12),
+                            horizontal: 16, vertical: 13),
                         child: Row(
                           children: [
                             GestureDetector(
-                              onTap: () =>
-                                  context.read<TasksProvider>().toggleDone(t.id),
+                              onTap: () => context
+                                  .read<TasksProvider>()
+                                  .toggleDone(t.id),
                               child: Container(
                                 width: 22,
                                 height: 22,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: AppColors.primary.withOpacity(0.5),
+                                    color: AppColors.primary.withOpacity(0.6),
                                     width: 2,
                                   ),
                                 ),
@@ -145,15 +164,29 @@ class HomeScreen extends StatelessWidget {
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: Text(t.title,
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColors.textPrimary)),
+                              child: Text(
+                                t.title,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
                             ),
                             if (assignee != null)
-                              Text(assignee.avatarEmoji,
-                                  style: const TextStyle(fontSize: 18)),
+                              Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: memberColor.withOpacity(0.15),
+                                ),
+                                child: Center(
+                                  child: Text(assignee.avatarEmoji,
+                                      style:
+                                          const TextStyle(fontSize: 16)),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -161,64 +194,85 @@ class HomeScreen extends StatelessWidget {
                   }),
                   const SizedBox(height: 8),
                 ],
-                // Shopping preview
+
+                // Shopping lists preview
                 if (shopping.lists.isNotEmpty) ...[
-                  _SectionTitle(
-                      title: 'Покупки', count: shopping.lists.length),
+                  _SectionHeader(
+                    title: 'Покупки',
+                    count: shopping.lists.length,
+                  ),
                   const SizedBox(height: 12),
                   ...shopping.lists.take(2).map((list) {
                     final items = shopping.itemsFor(list.id);
-                    final done =
-                        items.where((i) => i.isBought).length;
+                    final done = items.where((i) => i.isBought).length;
+                    final total = shopping.totalFor(list.id);
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: 10),
                       child: GlassCard(
                         padding: const EdgeInsets.all(16),
                         child: Row(
                           children: [
                             Container(
-                              width: 42,
-                              height: 42,
+                              width: 48,
+                              height: 48,
                               decoration: BoxDecoration(
-                                color: AppColors.accent.withOpacity(0.15),
-                                borderRadius: BorderRadius.circular(12),
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF3DCFCF),
+                                    Color(0xFF5DB8FF)
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(14),
                               ),
                               child: const Center(
                                   child: Text('🛒',
-                                      style: TextStyle(fontSize: 20))),
+                                      style: TextStyle(fontSize: 22))),
                             ),
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 14),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(list.name,
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
+                                          fontWeight: FontWeight.w700,
                                           fontSize: 15,
                                           color: AppColors.textPrimary)),
+                                  const SizedBox(height: 3),
                                   Text(
                                     '${list.itemCount} позиций · $done куплено',
                                     style: const TextStyle(
                                         fontSize: 12,
                                         color: AppColors.textSecondary),
                                   ),
+                                  if (list.itemCount > 0) ...[
+                                    const SizedBox(height: 6),
+                                    _ProgressBar(
+                                        progress: done / list.itemCount),
+                                  ],
                                 ],
                               ),
                             ),
-                            if (list.itemCount > 0)
-                              _ProgressRing(
-                                progress: list.itemCount > 0
-                                    ? done / list.itemCount
-                                    : 0,
+                            if (total > 0) ...[
+                              const SizedBox(width: 12),
+                              Text(
+                                '${total.toStringAsFixed(0)} ₽',
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.accent,
+                                ),
                               ),
+                            ],
                           ],
                         ),
                       ),
                     );
                   }),
                 ],
-                const SizedBox(height: 100),
+                const SizedBox(height: 110),
               ],
             ),
           ),
@@ -236,29 +290,30 @@ class _InviteCodeChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return GlassCard(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      borderRadius: 12,
+      borderRadius: 14,
       onTap: () {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Код приглашения: $code'),
+            content: Text('Код: $code'),
             behavior: SnackBarBehavior.floating,
             backgroundColor: AppColors.primary,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
           ),
         );
       },
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.share_rounded,
-              size: 14, color: AppColors.textSecondary),
-          const SizedBox(width: 4),
+          const Icon(Icons.share_rounded, size: 14, color: AppColors.primary),
+          const SizedBox(width: 5),
           Text(
             code.toUpperCase(),
             style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textSecondary,
-              letterSpacing: 1,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: AppColors.primary,
+              letterSpacing: 1.2,
             ),
           ),
         ],
@@ -277,19 +332,56 @@ class _MemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        Color(int.parse(member.color.replaceFirst('#', '0xFF')));
+    final color = Color(int.parse(member.color.replaceFirst('#', '0xFF')));
     return GlassCard(
-      width: 72,
-      borderRadius: 20,
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      color: isMe ? color : null,
-      opacity: isMe ? 0.2 : 0.18,
+      width: 76,
+      borderRadius: 22,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+      color: isMe ? color : Colors.white,
+      opacity: isMe ? 0.22 : 0.3,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(member.avatarEmoji, style: const TextStyle(fontSize: 26)),
-          const SizedBox(height: 4),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color.withOpacity(0.15),
+                  border: isMe ? Border.all(color: color, width: 2) : null,
+                ),
+                child: Center(
+                  child: Text(member.avatarEmoji,
+                      style: const TextStyle(fontSize: 22)),
+                ),
+              ),
+              if (taskCount > 0)
+                Positioned(
+                  top: -4,
+                  right: -6,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.white, width: 1.5),
+                    ),
+                    child: Text(
+                      '$taskCount',
+                      style: const TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 6),
           Text(
             member.name,
             style: TextStyle(
@@ -299,24 +391,8 @@ class _MemberCard extends StatelessWidget {
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
-          if (taskCount > 0)
-            Container(
-              margin: const EdgeInsets.only(top: 3),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                '$taskCount',
-                style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: color),
-              ),
-            ),
         ],
       ),
     );
@@ -324,16 +400,17 @@ class _MemberCard extends StatelessWidget {
 }
 
 class _StatCard extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
-  final Color color;
+  final List<Color> gradientColors;
 
-  const _StatCard(
-      {required this.icon,
-      required this.label,
-      required this.value,
-      required this.color});
+  const _StatCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.gradientColors,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -342,26 +419,41 @@ class _StatCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(height: 8),
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: gradientColors,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+                child: Text(icon, style: const TextStyle(fontSize: 18))),
+          ),
+          const SizedBox(height: 10),
           Text(value,
               style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.w800,
-                  color: color)),
+                  color: gradientColors[0])),
           Text(label,
               style: const TextStyle(
-                  fontSize: 11, color: AppColors.textSecondary)),
+                  fontSize: 11,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500)),
         ],
       ),
     );
   }
 }
 
-class _SectionTitle extends StatelessWidget {
+class _SectionHeader extends StatelessWidget {
   final String title;
   final int count;
-  const _SectionTitle({required this.title, required this.count});
+  const _SectionHeader({required this.title, required this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -370,19 +462,20 @@ class _SectionTitle extends StatelessWidget {
         Text(title,
             style: const TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary)),
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.3)),
         const SizedBox(width: 8),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
           decoration: BoxDecoration(
             color: AppColors.primary.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Text('$count',
               style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
                   color: AppColors.primary)),
         ),
       ],
@@ -390,33 +483,19 @@ class _SectionTitle extends StatelessWidget {
   }
 }
 
-class _ProgressRing extends StatelessWidget {
+class _ProgressBar extends StatelessWidget {
   final double progress;
-  const _ProgressRing({required this.progress});
+  const _ProgressBar({required this.progress});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 36,
-      height: 36,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CircularProgressIndicator(
-            value: progress,
-            strokeWidth: 3,
-            backgroundColor: AppColors.accent.withOpacity(0.15),
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(AppColors.accent),
-          ),
-          Text(
-            '${(progress * 100).round()}%',
-            style: const TextStyle(
-                fontSize: 9,
-                fontWeight: FontWeight.w700,
-                color: AppColors.accent),
-          ),
-        ],
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: LinearProgressIndicator(
+        value: progress.clamp(0.0, 1.0),
+        backgroundColor: AppColors.accent.withOpacity(0.15),
+        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accent),
+        minHeight: 5,
       ),
     );
   }

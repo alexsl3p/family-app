@@ -41,58 +41,77 @@ class _TasksScreenState extends State<TasksScreen>
 
     return Column(
       children: [
+        // Header
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Дела',
-                  style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary)),
+              const Text(
+                'Дела',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                  letterSpacing: -0.8,
+                ),
+              ),
               GestureDetector(
                 onTap: () => _showAddTask(context),
                 child: Container(
-                  width: 40,
-                  height: 40,
+                  width: 42,
+                  height: 42,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [AppColors.primary, AppColors.primaryLight],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                          color: AppColors.primary.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4))
+                        color: AppColors.primary.withOpacity(0.35),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5),
+                      ),
                     ],
                   ),
                   child: const Icon(Icons.add_rounded,
-                      color: Colors.white, size: 22),
+                      color: Colors.white, size: 24),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 16),
+
         // Tab bar
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: GlassCard(
             padding: const EdgeInsets.all(4),
-            borderRadius: 16,
+            borderRadius: 18,
+            opacity: 0.3,
             child: TabBar(
               controller: _tab,
               indicator: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(12),
+                gradient: const LinearGradient(
+                  colors: [AppColors.primary, AppColors.primaryLight],
+                ),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               indicatorSize: TabBarIndicatorSize.tab,
               labelColor: Colors.white,
               unselectedLabelColor: AppColors.textSecondary,
               labelStyle: const TextStyle(
-                  fontWeight: FontWeight.w600, fontSize: 13),
+                  fontWeight: FontWeight.w700, fontSize: 13),
               dividerColor: Colors.transparent,
               tabs: const [
                 Tab(text: 'Все'),
@@ -102,11 +121,12 @@ class _TasksScreenState extends State<TasksScreen>
             ),
           ),
         ),
-        // Member filter
+
+        // Member filter chips
         if (family.members.isNotEmpty) ...[
           const SizedBox(height: 12),
           SizedBox(
-            height: 38,
+            height: 36,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               scrollDirection: Axis.horizontal,
@@ -124,20 +144,22 @@ class _TasksScreenState extends State<TasksScreen>
                 return _FilterChip(
                   label: '${m.avatarEmoji} ${m.name}',
                   selected: _filterMember == i - 1,
-                  onTap: () => setState(
-                      () => _filterMember = _filterMember == i - 1 ? -1 : i - 1),
+                  onTap: () => setState(() =>
+                      _filterMember = _filterMember == i - 1 ? -1 : i - 1),
                 );
               },
             ),
           ),
         ],
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
+
+        // Task lists
         Expanded(
           child: TabBarView(
             controller: _tab,
             children: [
               _TaskList(
-                tasks: _applyFilter(tasks.pending, family, auth, 'all'),
+                tasks: _applyFilter(tasks.pending, family, auth),
                 family: family,
                 auth: auth,
               ),
@@ -145,8 +167,7 @@ class _TasksScreenState extends State<TasksScreen>
                 tasks: _applyFilter(
                     tasks.pending.where((t) => t.assignedTo != null).toList(),
                     family,
-                    auth,
-                    'all'),
+                    auth),
                 family: family,
                 auth: auth,
               ),
@@ -165,7 +186,7 @@ class _TasksScreenState extends State<TasksScreen>
   }
 
   List<FamilyTask> _applyFilter(
-      List<FamilyTask> tasks, FamilyProvider family, AuthProvider auth, String _) {
+      List<FamilyTask> tasks, FamilyProvider family, AuthProvider auth) {
     if (_filterMember == -1) return tasks;
     final memberId = family.members[_filterMember].id;
     return tasks.where((t) => t.assignedTo == memberId).toList();
@@ -197,16 +218,25 @@ class _FilterChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary
-              : Colors.white.withOpacity(0.3),
+          gradient: selected
+              ? const LinearGradient(
+                  colors: [AppColors.primary, AppColors.primaryLight])
+              : null,
+          color: selected ? null : Colors.white.withOpacity(0.35),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: selected
-                ? Colors.transparent
-                : Colors.white.withOpacity(0.4),
-            width: 1,
+            color: selected ? Colors.transparent : Colors.white.withOpacity(0.6),
+            width: 1.5,
           ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  )
+                ]
+              : [],
         ),
         child: Text(
           label,
@@ -236,23 +266,30 @@ class _TaskList extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('✅', style: TextStyle(fontSize: 48)),
-            SizedBox(height: 12),
+            Text('✅', style: TextStyle(fontSize: 56)),
+            SizedBox(height: 16),
             Text('Всё сделано!',
                 style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
                     color: AppColors.textSecondary)),
+            SizedBox(height: 6),
+            Text('Нет активных задач',
+                style: TextStyle(color: AppColors.textLight)),
           ],
         ),
       );
     }
 
-    // Group by period
     final Map<String, List<FamilyTask>> grouped = {};
     const order = [
-      'Просрочено', 'Сегодня', 'Завтра', 'На этой неделе',
-      'На след. неделе', 'Следующий месяц', 'Без срока'
+      'Просрочено',
+      'Сегодня',
+      'Завтра',
+      'На этой неделе',
+      'На след. неделе',
+      'Следующий месяц',
+      'Без срока'
     ];
     for (final period in order) {
       final list = tasks.where((t) => t.duePeriod == period).toList();
@@ -260,23 +297,55 @@ class _TaskList extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
       physics: const BouncingScrollPhysics(),
       itemCount: grouped.length,
       itemBuilder: (_, i) {
         final period = grouped.keys.elementAt(i);
         final periodTasks = grouped[period]!;
+        final isOverdueSection = period == 'Просрочено';
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 16, bottom: 8),
-              child: Text(period,
-                  style: const TextStyle(
+              child: Row(
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isOverdueSection
+                          ? AppColors.error
+                          : AppColors.primary.withOpacity(0.5),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    period,
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.textSecondary,
-                      letterSpacing: 0.5)),
+                      color: isOverdueSection
+                          ? AppColors.error
+                          : AppColors.textSecondary,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${periodTasks.length}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isOverdueSection
+                          ? AppColors.error.withOpacity(0.6)
+                          : AppColors.textLight,
+                    ),
+                  ),
+                ],
+              ),
             ),
             ...periodTasks.map((t) => _TaskTile(task: t, family: family)),
           ],
@@ -297,16 +366,23 @@ class _TaskTile extends StatelessWidget {
     final assignee =
         task.assignedTo != null ? family.memberById(task.assignedTo!) : null;
     final isOverdue = task.duePeriod == 'Просрочено';
+    final memberColor = assignee != null
+        ? Color(int.parse(assignee.color.replaceFirst('#', '0xFF')))
+        : AppColors.primary;
 
     return Dismissible(
       key: Key(task.id),
       direction: DismissDirection.endToStart,
-      onDismissed: (_) =>
-          context.read<TasksProvider>().deleteTask(task.id),
+      onDismissed: (_) => context.read<TasksProvider>().deleteTask(task.id),
       background: Container(
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
-          color: AppColors.error.withOpacity(0.8),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.error.withOpacity(0.6),
+              AppColors.error,
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
         ),
         alignment: Alignment.centerRight,
@@ -316,7 +392,7 @@ class _TaskTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: GlassCard(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
           child: Row(
             children: [
               GestureDetector(
@@ -331,7 +407,7 @@ class _TaskTile extends StatelessWidget {
                     border: Border.all(
                       color: isOverdue
                           ? AppColors.error
-                          : AppColors.primary.withOpacity(0.5),
+                          : AppColors.primary.withOpacity(0.55),
                       width: 2,
                     ),
                   ),
@@ -342,38 +418,61 @@ class _TaskTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(task.title,
-                        style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: isOverdue
-                                ? AppColors.error
-                                : AppColors.textPrimary)),
+                    Text(
+                      task.title,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: isOverdue
+                            ? AppColors.error
+                            : AppColors.textPrimary,
+                      ),
+                    ),
                     if (task.dueDate != null)
-                      Text(
-                        DateFormat('d MMM', 'ru').format(task.dueDate!),
-                        style: TextStyle(
+                      Padding(
+                        padding: const EdgeInsets.only(top: 3),
+                        child: Text(
+                          DateFormat('d MMM', 'ru').format(task.dueDate!),
+                          style: TextStyle(
                             fontSize: 12,
                             color: isOverdue
                                 ? AppColors.error.withOpacity(0.7)
-                                : AppColors.textLight),
+                                : AppColors.textLight,
+                          ),
+                        ),
                       ),
                   ],
                 ),
               ),
               if (task.priority == 'high')
                 Container(
-                  width: 6,
-                  height: 6,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 3),
                   margin: const EdgeInsets.only(right: 8),
-                  decoration: const BoxDecoration(
-                    color: AppColors.error,
-                    shape: BoxShape.circle,
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    '🔴',
+                    style: TextStyle(fontSize: 11),
                   ),
                 ),
               if (assignee != null)
-                Text(assignee.avatarEmoji,
-                    style: const TextStyle(fontSize: 18)),
+                Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: memberColor.withOpacity(0.15),
+                    border: Border.all(
+                        color: memberColor.withOpacity(0.3), width: 1),
+                  ),
+                  child: Center(
+                    child: Text(assignee.avatarEmoji,
+                        style: const TextStyle(fontSize: 16)),
+                  ),
+                ),
             ],
           ),
         ),
@@ -432,19 +531,27 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
     final family = widget.parentContext.watch<FamilyProvider>();
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFDDE8F8), Color(0xFFEDE8F8)],
+          colors: [
+            AppColors.bg1.withOpacity(0.98),
+            AppColors.bg2.withOpacity(0.98),
+          ],
         ),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        border: const Border(
+          top: BorderSide(color: Colors.white, width: 1.5),
+          left: BorderSide(color: Colors.white, width: 1.5),
+          right: BorderSide(color: Colors.white, width: 1.5),
+        ),
       ),
       padding: EdgeInsets.only(
         left: 24,
         right: 24,
         top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 28,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -452,59 +559,25 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
         children: [
           Center(
             child: Container(
-              width: 40,
+              width: 44,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.12),
+                color: AppColors.textLight.withOpacity(0.4),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
-          const SizedBox(height: 20),
-          const Text('Новое дело',
-              style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary)),
-          const SizedBox(height: 20),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-              child: TextField(
-                controller: _titleCtrl,
-                autofocus: true,
-                style: const TextStyle(
-                    color: AppColors.textPrimary, fontWeight: FontWeight.w500),
-                decoration: InputDecoration(
-                  hintText: 'Что нужно сделать?',
-                  hintStyle: const TextStyle(color: AppColors.textLight),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(0.25),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(
-                        color: Colors.white.withOpacity(0.3), width: 1),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(
-                        color: Colors.white.withOpacity(0.3), width: 1),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(
-                        color: AppColors.primary.withOpacity(0.5),
-                        width: 1.5),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 14),
-                ),
-              ),
-            ),
+          const SizedBox(height: 22),
+          const Text(
+            'Новое дело',
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary),
           ),
+          const SizedBox(height: 20),
+          _glassField(_titleCtrl, 'Что нужно сделать?', autofocus: true),
           const SizedBox(height: 16),
-          // Assign to
           const Text('Назначить',
               style: TextStyle(
                   fontWeight: FontWeight.w600,
@@ -512,7 +585,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   fontSize: 13)),
           const SizedBox(height: 10),
           SizedBox(
-            height: 50,
+            height: 48,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
@@ -532,7 +605,6 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
             ),
           ),
           const SizedBox(height: 16),
-          // Date + priority row
           Row(
             children: [
               Expanded(
@@ -547,7 +619,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                       context: context,
                       initialDate: DateTime.now(),
                       firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(const Duration(days: 365)),
+                      lastDate:
+                          DateTime.now().add(const Duration(days: 365)),
                     );
                     if (d != null) setState(() => _dueDate = d);
                   },
@@ -563,9 +636,11 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                       isExpanded: true,
                       icon: const Icon(Icons.expand_more_rounded,
                           color: AppColors.textSecondary),
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 14),
                       items: const [
-                        DropdownMenuItem(value: 'low', child: Text('Низкий')),
+                        DropdownMenuItem(
+                            value: 'low', child: Text('Низкий')),
                         DropdownMenuItem(
                             value: 'normal', child: Text('Обычный')),
                         DropdownMenuItem(
@@ -583,6 +658,45 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
           GlassButton(
               label: 'Добавить', onTap: _save, isLoading: _loading),
         ],
+      ),
+    );
+  }
+
+  Widget _glassField(TextEditingController ctrl, String hint,
+      {bool autofocus = false}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: TextField(
+          controller: ctrl,
+          autofocus: autofocus,
+          style: const TextStyle(
+              color: AppColors.textPrimary, fontWeight: FontWeight.w500),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: AppColors.textLight),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.35),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide:
+                  BorderSide(color: Colors.white.withOpacity(0.5), width: 1.5),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide:
+                  BorderSide(color: Colors.white.withOpacity(0.5), width: 1.5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide(
+                  color: AppColors.primary.withOpacity(0.6), width: 2),
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          ),
+        ),
       ),
     );
   }
@@ -607,17 +721,17 @@ class _AssignChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         margin: const EdgeInsets.only(right: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: selected
               ? AppColors.primary.withOpacity(0.15)
-              : Colors.white.withOpacity(0.3),
+              : Colors.white.withOpacity(0.4),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: selected
                 ? AppColors.primary
-                : Colors.white.withOpacity(0.4),
-            width: selected ? 2 : 1,
+                : Colors.white.withOpacity(0.5),
+            width: selected ? 2 : 1.5,
           ),
         ),
         child: Row(

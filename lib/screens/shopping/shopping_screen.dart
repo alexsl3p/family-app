@@ -29,50 +29,59 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Header
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Покупки',
-                  style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary)),
+              const Text(
+                'Покупки',
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                  letterSpacing: -0.8,
+                ),
+              ),
               GestureDetector(
                 onTap: () => _showCreateList(context),
                 child: Container(
-                  width: 40,
-                  height: 40,
+                  width: 42,
+                  height: 42,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [AppColors.accent, Color(0xFF43D9AD)],
+                      colors: [Color(0xFF3DCFCF), Color(0xFF5DB8FF)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                          color: AppColors.accent.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4))
+                        color: AppColors.accent.withOpacity(0.35),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5),
+                      ),
                     ],
                   ),
                   child: const Icon(Icons.add_rounded,
-                      color: Colors.white, size: 22),
+                      color: Colors.white, size: 24),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 16),
+
         // List selector chips
         if (shopping.lists.isNotEmpty) ...[
           SizedBox(
-            height: 44,
+            height: 42,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               scrollDirection: Axis.horizontal,
               itemCount: shopping.lists.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
               itemBuilder: (_, i) {
                 final list = shopping.lists[i];
                 final selected = _activeListId == list.id ||
@@ -85,22 +94,26 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: selected
-                          ? AppColors.accent
-                          : Colors.white.withOpacity(0.3),
+                      gradient: selected
+                          ? const LinearGradient(
+                              colors: [Color(0xFF3DCFCF), Color(0xFF5DB8FF)],
+                            )
+                          : null,
+                      color: selected ? null : Colors.white.withOpacity(0.35),
                       borderRadius: BorderRadius.circular(22),
                       border: Border.all(
                         color: selected
                             ? Colors.transparent
-                            : Colors.white.withOpacity(0.4),
-                        width: 1,
+                            : Colors.white.withOpacity(0.6),
+                        width: 1.5,
                       ),
                       boxShadow: selected
                           ? [
                               BoxShadow(
-                                  color: AppColors.accent.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3))
+                                color: AppColors.accent.withOpacity(0.3),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              )
                             ]
                           : [],
                     ),
@@ -109,15 +122,18 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                       children: [
                         Text('🛒',
                             style: TextStyle(
-                                fontSize: selected ? 15 : 14)),
+                                fontSize: selected ? 14 : 13)),
                         const SizedBox(width: 6),
-                        Text(list.name,
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: selected
-                                    ? Colors.white
-                                    : AppColors.textSecondary)),
+                        Text(
+                          list.name,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: selected
+                                ? Colors.white
+                                : AppColors.textSecondary,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -125,8 +141,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
               },
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
         ],
+
         Expanded(
           child: shopping.lists.isEmpty
               ? _EmptyState(onAdd: () => _showCreateList(context))
@@ -151,19 +168,27 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [Color(0xFFDDE8F8), Color(0xFFEDE8F8)],
+            colors: [
+              AppColors.bg1.withOpacity(0.98),
+              AppColors.bg2.withOpacity(0.98),
+            ],
           ),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+          border: const Border(
+            top: BorderSide(color: Colors.white, width: 1.5),
+            left: BorderSide(color: Colors.white, width: 1.5),
+            right: BorderSide(color: Colors.white, width: 1.5),
+          ),
         ),
         padding: EdgeInsets.only(
           left: 24,
           right: 24,
           top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 28,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -171,25 +196,25 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
           children: [
             Center(
               child: Container(
-                width: 40,
+                width: 44,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.12),
+                  color: AppColors.textLight.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 22),
             const Text('Новый список',
                 style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
                     color: AppColors.textPrimary)),
             const SizedBox(height: 20),
             ClipRRect(
               borderRadius: BorderRadius.circular(14),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: TextField(
                   controller: ctrl,
                   autofocus: true,
@@ -200,22 +225,22 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                     hintText: 'Название списка',
                     hintStyle: const TextStyle(color: AppColors.textLight),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.25),
+                    fillColor: Colors.white.withOpacity(0.35),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3), width: 1),
+                          color: Colors.white.withOpacity(0.5), width: 1.5),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3), width: 1),
+                          color: Colors.white.withOpacity(0.5), width: 1.5),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(
-                          color: AppColors.accent.withOpacity(0.5),
-                          width: 1.5),
+                          color: AppColors.accent.withOpacity(0.6),
+                          width: 2),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 14),
@@ -231,8 +256,7 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
                 final auth = context.read<AuthProvider>();
                 final newList = await context
                     .read<ShoppingProvider>()
-                    .createList(ctrl.text.trim(),
-                        createdBy: auth.memberId);
+                    .createList(ctrl.text.trim(), createdBy: auth.memberId);
                 setState(() => _activeListId = newList.id);
                 if (mounted) Navigator.pop(context);
               },
@@ -247,8 +271,9 @@ class _ShoppingScreenState extends State<ShoppingScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Удалить список?'),
-        content: Text('«${list.name}» будет удалён со всеми покупками.'),
+        content: Text('«${list.name}» будет удалён со всеми товарами.'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
@@ -283,93 +308,173 @@ class _ShoppingListView extends StatelessWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        if (total > 0)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-              child: GlassCard(
-                padding: const EdgeInsets.all(16),
-                color: AppColors.accent,
-                opacity: 0.12,
-                child: Row(
-                  children: [
-                    const Icon(Icons.receipt_long_rounded,
-                        color: AppColors.accent, size: 20),
-                    const SizedBox(width: 10),
-                    const Text('Итого к покупке:',
-                        style: TextStyle(
-                            color: AppColors.textSecondary, fontSize: 14)),
-                    const Spacer(),
-                    Text(
-                      '${total.toStringAsFixed(0)} ₽',
-                      style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.accent),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+        // Total + Add button
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-            child: GlassButton(
-              label: 'Добавить товар',
-              icon: Icons.add_rounded,
-              isPrimary: false,
-              onTap: () => _showAddItem(context, list.id, auth.memberId),
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+            child: Row(
+              children: [
+                if (total > 0) ...[
+                  Expanded(
+                    child: GlassCard(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 13),
+                      color: AppColors.accent,
+                      opacity: 0.14,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFF3DCFCF),
+                                  Color(0xFF5DB8FF)
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Center(
+                                child: Text('💰',
+                                    style: TextStyle(fontSize: 16))),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Итого',
+                                  style: TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                Text(
+                                  '${total.toStringAsFixed(0)} ₽',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.accent,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+                GestureDetector(
+                  onTap: () =>
+                      _showAddItem(context, list.id, auth.memberId),
+                  child: Container(
+                    width: total > 0 ? 52 : double.infinity,
+                    height: 56,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF6E5FFF), Color(0xFF9B8FFF)],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.3),
+                          blurRadius: 12,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: total > 0
+                        ? const Icon(Icons.add_rounded,
+                            color: Colors.white, size: 26)
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.add_rounded,
+                                  color: Colors.white, size: 22),
+                              SizedBox(width: 6),
+                              Text(
+                                'Добавить товар',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
+
         if (pending.isEmpty && bought.isEmpty)
           const SliverFillRemaining(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('🛒', style: TextStyle(fontSize: 48)),
+                  Text('🛒', style: TextStyle(fontSize: 56)),
                   SizedBox(height: 12),
                   Text('Список пустой',
                       style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
                           color: AppColors.textSecondary)),
-                  Text('Добавьте первый товар',
+                  SizedBox(height: 6),
+                  Text('Нажмите + чтобы добавить товар',
                       style: TextStyle(color: AppColors.textLight)),
                 ],
               ),
             ),
           ),
+
         if (pending.isNotEmpty)
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (_, i) => _ItemTile(
-                  item: pending[i], listId: list.id, memberId: auth.memberId),
+                  item: pending[i],
+                  listId: list.id,
+                  memberId: auth.memberId),
               childCount: pending.length,
             ),
           ),
+
         if (bought.isNotEmpty) ...[
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-              child: Text('Куплено (${bought.length})',
-                  style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textSecondary)),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.check_circle_rounded,
+                      size: 14, color: AppColors.success),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Куплено (${bought.length})',
+                    style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.success),
+                  ),
+                ],
+              ),
             ),
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (_, i) => _ItemTile(
-                  item: bought[i], listId: list.id, memberId: auth.memberId),
+                  item: bought[i],
+                  listId: list.id,
+                  memberId: auth.memberId),
               childCount: bought.length,
             ),
           ),
         ],
-        const SliverToBoxAdapter(child: SizedBox(height: 100)),
+        const SliverToBoxAdapter(child: SizedBox(height: 110)),
       ],
     );
   }
@@ -387,19 +492,28 @@ class _ShoppingListView extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => StatefulBuilder(builder: (ctx, setModalState) {
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFFDDE8F8), Color(0xFFEDE8F8)],
+              colors: [
+                AppColors.bg1.withOpacity(0.98),
+                AppColors.bg2.withOpacity(0.98),
+              ],
             ),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(32)),
+            border: const Border(
+              top: BorderSide(color: Colors.white, width: 1.5),
+              left: BorderSide(color: Colors.white, width: 1.5),
+              right: BorderSide(color: Colors.white, width: 1.5),
+            ),
           ),
           padding: EdgeInsets.only(
             left: 24,
             right: 24,
             top: 16,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 28,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -407,19 +521,19 @@ class _ShoppingListView extends StatelessWidget {
             children: [
               Center(
                 child: Container(
-                  width: 40,
+                  width: 44,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.12),
+                    color: AppColors.textLight.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 22),
               const Text('Добавить товар',
                   style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
                       color: AppColors.textPrimary)),
               const SizedBox(height: 16),
               _glassField(nameCtrl, 'Название товара', autofocus: true),
@@ -434,11 +548,15 @@ class _ShoppingListView extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              // Category chips
               Wrap(
                 spacing: 8,
+                runSpacing: 8,
                 children: [
-                  'Продукты', 'Напитки', 'Бытовое', 'Аптека', 'Другое'
+                  'Продукты',
+                  'Напитки',
+                  'Бытовое',
+                  'Аптека',
+                  'Другое'
                 ].map((c) {
                   final sel = category == c;
                   return GestureDetector(
@@ -447,17 +565,17 @@ class _ShoppingListView extends StatelessWidget {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
+                          horizontal: 14, vertical: 7),
                       decoration: BoxDecoration(
                         color: sel
-                            ? AppColors.accent.withOpacity(0.2)
-                            : Colors.white.withOpacity(0.3),
+                            ? AppColors.accent.withOpacity(0.18)
+                            : Colors.white.withOpacity(0.4),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: sel
                               ? AppColors.accent
-                              : Colors.white.withOpacity(0.4),
-                          width: sel ? 2 : 1,
+                              : Colors.white.withOpacity(0.5),
+                          width: sel ? 2 : 1.5,
                         ),
                       ),
                       child: Text(c,
@@ -502,7 +620,7 @@ class _ShoppingListView extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(14),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: TextField(
           controller: ctrl,
           autofocus: autofocus,
@@ -513,21 +631,21 @@ class _ShoppingListView extends StatelessWidget {
             hintText: hint,
             hintStyle: const TextStyle(color: AppColors.textLight),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.25),
+            fillColor: Colors.white.withOpacity(0.35),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide:
-                  BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
+              borderSide: BorderSide(
+                  color: Colors.white.withOpacity(0.5), width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide:
-                  BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
+              borderSide: BorderSide(
+                  color: Colors.white.withOpacity(0.5), width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
               borderSide: BorderSide(
-                  color: AppColors.accent.withOpacity(0.5), width: 1.5),
+                  color: AppColors.accent.withOpacity(0.6), width: 2),
             ),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -554,9 +672,14 @@ class _ItemTile extends StatelessWidget {
       onDismissed: (_) =>
           context.read<ShoppingProvider>().deleteItem(listId, item.id),
       background: Container(
-        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
+        margin: const EdgeInsets.fromLTRB(20, 0, 20, 8),
         decoration: BoxDecoration(
-          color: AppColors.error.withOpacity(0.8),
+          gradient: LinearGradient(
+            colors: [
+              AppColors.error.withOpacity(0.6),
+              AppColors.error,
+            ],
+          ),
           borderRadius: BorderRadius.circular(20),
         ),
         alignment: Alignment.centerRight,
@@ -566,8 +689,8 @@ class _ItemTile extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
         child: GlassCard(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          opacity: item.isBought ? 0.1 : 0.18,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+          opacity: item.isBought ? 0.12 : 0.28,
           child: Row(
             children: [
               GestureDetector(
@@ -576,23 +699,28 @@ class _ItemTile extends StatelessWidget {
                     .toggleItem(listId, item.id, memberId),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
-                  width: 24,
-                  height: 24,
+                  width: 26,
+                  height: 26,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: item.isBought
-                        ? AppColors.accent
-                        : Colors.transparent,
-                    border: Border.all(
-                      color: item.isBought
-                          ? AppColors.accent
-                          : AppColors.accent.withOpacity(0.4),
-                      width: 2,
-                    ),
+                    gradient: item.isBought
+                        ? const LinearGradient(
+                            colors: [
+                              Color(0xFF3DCFCF),
+                              Color(0xFF5DB8FF)
+                            ],
+                          )
+                        : null,
+                    border: item.isBought
+                        ? null
+                        : Border.all(
+                            color: AppColors.accent.withOpacity(0.5),
+                            width: 2,
+                          ),
                   ),
                   child: item.isBought
                       ? const Icon(Icons.check_rounded,
-                          color: Colors.white, size: 14)
+                          color: Colors.white, size: 15)
                       : null,
                 ),
               ),
@@ -605,37 +733,53 @@ class _ItemTile extends StatelessWidget {
                       item.name,
                       style: TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         color: item.isBought
                             ? AppColors.textLight
                             : AppColors.textPrimary,
                         decoration: item.isBought
                             ? TextDecoration.lineThrough
                             : null,
+                        decorationColor: AppColors.textLight,
                       ),
                     ),
                     if (item.quantity != null || item.category != null)
-                      Text(
-                        [item.quantity, item.category]
-                            .where((e) => e != null)
-                            .join(' · '),
-                        style: const TextStyle(
-                            fontSize: 12, color: AppColors.textLight),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Text(
+                          [item.quantity, item.category]
+                              .where((e) => e != null)
+                              .join(' · '),
+                          style: const TextStyle(
+                              fontSize: 12, color: AppColors.textLight),
+                        ),
                       ),
                   ],
                 ),
               ),
-              if (item.price != null)
-                Text(
-                  '${item.price!.toStringAsFixed(0)} ₽',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
+              if (item.price != null) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
                     color: item.isBought
-                        ? AppColors.textLight
-                        : AppColors.textPrimary,
+                        ? AppColors.textLight.withOpacity(0.1)
+                        : AppColors.accent.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '${item.price!.toStringAsFixed(0)} ₽',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: item.isBought
+                          ? AppColors.textLight
+                          : AppColors.accent,
+                    ),
                   ),
                 ),
+              ],
             ],
           ),
         ),
@@ -654,19 +798,42 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('🛒', style: TextStyle(fontSize: 56)),
-          const SizedBox(height: 16),
+          Container(
+            width: 96,
+            height: 96,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF3DCFCF), Color(0xFF5DB8FF)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.accent.withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child:
+                const Center(child: Text('🛒', style: TextStyle(fontSize: 46))),
+          ),
+          const SizedBox(height: 20),
           const Text('Нет списков покупок',
               style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary)),
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                  letterSpacing: -0.3)),
           const SizedBox(height: 8),
           const Text('Создайте первый список\nдля вашей семьи',
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 15, color: AppColors.textSecondary, height: 1.5)),
-          const SizedBox(height: 28),
+                  fontSize: 15,
+                  color: AppColors.textSecondary,
+                  height: 1.5)),
+          const SizedBox(height: 32),
           GlassButton(
             label: 'Создать список',
             icon: Icons.add_rounded,

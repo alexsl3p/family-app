@@ -19,8 +19,8 @@ class GlassCard extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(16),
     this.margin,
-    this.blur = 12,
-    this.opacity = 0.18,
+    this.blur = 16,
+    this.opacity = 0.28,
     this.borderRadius = 20,
     this.color,
     this.onTap,
@@ -42,17 +42,22 @@ class GlassCard extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
             child: Container(
               decoration: BoxDecoration(
-                color: (color ?? AppColors.glassWhite).withOpacity(opacity),
+                color: (color ?? Colors.white).withOpacity(opacity),
                 borderRadius: BorderRadius.circular(borderRadius),
                 border: Border.all(
-                  color: AppColors.glassBorder.withOpacity(0.35),
-                  width: 1.2,
+                  color: Colors.white.withOpacity(0.55),
+                  width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withOpacity(0.06),
                     blurRadius: 20,
-                    offset: const Offset(0, 4),
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.white.withOpacity(0.5),
+                    blurRadius: 1,
+                    offset: const Offset(0, 1),
                   ),
                 ],
               ),
@@ -90,32 +95,38 @@ class GlassButton extends StatelessWidget {
       onTap: isLoading ? null : onTap,
       child: Container(
         width: width ?? double.infinity,
-        height: 54,
+        height: 56,
         decoration: BoxDecoration(
           gradient: isPrimary
               ? const LinearGradient(
-                  colors: [AppColors.primary, AppColors.primaryLight],
+                  colors: [Color(0xFF6E5FFF), Color(0xFF9B8FFF)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 )
               : null,
-          color: isPrimary ? null : Colors.white.withOpacity(0.25),
-          borderRadius: BorderRadius.circular(16),
+          color: isPrimary ? null : Colors.white.withOpacity(0.35),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: isPrimary
                 ? Colors.transparent
-                : Colors.white.withOpacity(0.4),
-            width: 1.2,
+                : Colors.white.withOpacity(0.6),
+            width: 1.5,
           ),
           boxShadow: isPrimary
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
+                    color: AppColors.primary.withOpacity(0.35),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
                   ),
                 ]
-              : null,
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
         ),
         child: Center(
           child: isLoading
@@ -131,21 +142,21 @@ class GlassButton extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (icon != null) ...[
-                      Icon(icon,
-                          color: isPrimary
-                              ? Colors.white
-                              : AppColors.textPrimary,
-                          size: 20),
+                      Icon(
+                        icon,
+                        color:
+                            isPrimary ? Colors.white : AppColors.textPrimary,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                     ],
                     Text(
                       label,
                       style: TextStyle(
-                        color:
-                            isPrimary ? Colors.white : AppColors.textPrimary,
+                        color: isPrimary ? Colors.white : AppColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        letterSpacing: 0.3,
+                        letterSpacing: 0.2,
                       ),
                     ),
                   ],

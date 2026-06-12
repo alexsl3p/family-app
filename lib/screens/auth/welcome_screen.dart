@@ -18,96 +18,106 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     with TickerProviderStateMixin {
   late AnimationController _fadeCtrl;
   late AnimationController _floatCtrl;
+  late AnimationController _scaleCtrl;
   late Animation<double> _fade;
   late Animation<double> _float;
+  late Animation<double> _scale;
 
   @override
   void initState() {
     super.initState();
     _fadeCtrl = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 900));
+        vsync: this, duration: const Duration(milliseconds: 1000));
     _floatCtrl = AnimationController(
         vsync: this, duration: const Duration(seconds: 3))
       ..repeat(reverse: true);
+    _scaleCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 800));
     _fade = CurvedAnimation(parent: _fadeCtrl, curve: Curves.easeOut);
-    _float = Tween<double>(begin: 0, end: 10)
+    _float = Tween<double>(begin: 0, end: 12)
         .animate(CurvedAnimation(parent: _floatCtrl, curve: Curves.easeInOut));
+    _scale = Tween<double>(begin: 0.8, end: 1.0)
+        .animate(CurvedAnimation(parent: _scaleCtrl, curve: Curves.elasticOut));
     _fadeCtrl.forward();
+    _scaleCtrl.forward();
   }
 
   @override
   void dispose() {
     _fadeCtrl.dispose();
     _floatCtrl.dispose();
+    _scaleCtrl.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: AppTheme.backgroundDecoration,
-        child: SafeArea(
-          child: FadeTransition(
-            opacity: _fade,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
-                children: [
-                  const Spacer(flex: 2),
-                  AnimatedBuilder(
-                    animation: _float,
-                    builder: (_, child) => Transform.translate(
-                      offset: Offset(0, -_float.value),
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        child: FadeTransition(
+          opacity: _fade,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 28),
+            child: Column(
+              children: [
+                const Spacer(flex: 2),
+                // Logo
+                AnimatedBuilder(
+                  animation: Listenable.merge([_float, _scale]),
+                  builder: (_, child) => Transform.translate(
+                    offset: Offset(0, -_float.value),
+                    child: Transform.scale(
+                      scale: _scale.value,
                       child: child,
                     ),
-                    child: GlassCard(
-                      width: 120,
-                      height: 120,
-                      borderRadius: 36,
-                      opacity: 0.3,
-                      child: const Center(
-                        child: Text('👨‍👩‍👧‍👦',
-                            style: TextStyle(fontSize: 52)),
-                      ),
+                  ),
+                  child: GlassCard(
+                    width: 130,
+                    height: 130,
+                    borderRadius: 38,
+                    opacity: 0.35,
+                    child: const Center(
+                      child: Text('👨‍👩‍👧‍👦', style: TextStyle(fontSize: 56)),
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  const Text(
-                    'Family OS',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.textPrimary,
-                      letterSpacing: -0.5,
-                    ),
+                ),
+                const SizedBox(height: 36),
+                const Text(
+                  'Family OS',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                    letterSpacing: -1.0,
                   ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'Всё нужное для каждой семьи\nв одном месте',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.textSecondary,
-                      height: 1.5,
-                    ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Всё для семьи — в одном месте',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                    letterSpacing: 0.1,
                   ),
-                  const Spacer(flex: 3),
-                  GlassButton(
-                    label: 'Создать семью',
-                    icon: Icons.add_rounded,
-                    onTap: () => _showCreateDialog(context),
-                  ),
-                  const SizedBox(height: 12),
-                  GlassButton(
-                    label: 'Войти в семью',
-                    icon: Icons.group_add_rounded,
-                    isPrimary: false,
-                    onTap: () => _showJoinDialog(context),
-                  ),
-                  const SizedBox(height: 40),
-                ],
-              ),
+                ),
+                const Spacer(flex: 3),
+                GlassButton(
+                  label: 'Создать семью',
+                  icon: Icons.add_rounded,
+                  onTap: () => _showCreateDialog(context),
+                ),
+                const SizedBox(height: 14),
+                GlassButton(
+                  label: 'Войти в семью',
+                  icon: Icons.group_add_rounded,
+                  isPrimary: false,
+                  onTap: () => _showJoinDialog(context),
+                ),
+                const SizedBox(height: 48),
+              ],
             ),
           ),
         ),
@@ -146,12 +156,12 @@ class _CreateFamilySheetState extends State<_CreateFamilySheet> {
   final _familyCtrl = TextEditingController();
   final _nameCtrl = TextEditingController();
   String _emoji = '😊';
-  String _color = '#6C63FF';
+  String _color = '#6E5FFF';
   bool _loading = false;
 
   final _emojis = ['😊', '👦', '👧', '👨', '👩', '👴', '👵', '🧑'];
   final _colors = [
-    '#6C63FF', '#FF6584', '#43D9AD', '#FFB347', '#87CEEB', '#DDA0DD'
+    '#6E5FFF', '#FF6B9D', '#3DCFCF', '#FFB347', '#5DB8FF', '#D87BFF'
   ];
 
   @override
@@ -167,8 +177,7 @@ class _CreateFamilySheetState extends State<_CreateFamilySheet> {
     }
     setState(() => _loading = true);
     try {
-      final group =
-          await SupabaseService.createGroup(_familyCtrl.text.trim());
+      final group = await SupabaseService.createGroup(_familyCtrl.text.trim());
       final member = await SupabaseService.createMember(
         groupId: group['id'] as String,
         name: _nameCtrl.text.trim(),
@@ -197,15 +206,11 @@ class _CreateFamilySheetState extends State<_CreateFamilySheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _field('Название семьи', _familyCtrl, hint: 'Семья Ивановых'),
+          _glassField('Название семьи', _familyCtrl, hint: 'Семья Ивановых'),
           const SizedBox(height: 16),
-          _field('Ваше имя', _nameCtrl, hint: 'Папа / Мама / Имя'),
+          _glassField('Ваше имя', _nameCtrl, hint: 'Папа / Мама / Имя'),
           const SizedBox(height: 20),
-          const Text('Аватар',
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
-                  fontSize: 13)),
+          _label('Аватар'),
           const SizedBox(height: 10),
           Row(
             children: _emojis.map((e) {
@@ -220,39 +225,32 @@ class _CreateFamilySheetState extends State<_CreateFamilySheet> {
                   decoration: BoxDecoration(
                     color: selected
                         ? AppColors.primary.withOpacity(0.15)
-                        : Colors.white.withOpacity(0.3),
+                        : Colors.white.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: selected
-                          ? AppColors.primary
-                          : Colors.white.withOpacity(0.4),
+                      color: selected ? AppColors.primary : Colors.white.withOpacity(0.5),
                       width: selected ? 2 : 1,
                     ),
                   ),
-                  child: Center(
-                      child: Text(e, style: const TextStyle(fontSize: 22))),
+                  child: Center(child: Text(e, style: const TextStyle(fontSize: 22))),
                 ),
               );
             }).toList(),
           ),
           const SizedBox(height: 20),
-          const Text('Цвет',
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
-                  fontSize: 13)),
+          _label('Цвет'),
           const SizedBox(height: 10),
           Row(
             children: _colors.map((c) {
               final selected = c == _color;
-              final col = _hexColor(c);
+              final col = Color(int.parse(c.replaceFirst('#', '0xFF')));
               return GestureDetector(
                 onTap: () => setState(() => _color = c),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   margin: const EdgeInsets.only(right: 10),
-                  width: 32,
-                  height: 32,
+                  width: 34,
+                  height: 34,
                   decoration: BoxDecoration(
                     color: col,
                     shape: BoxShape.circle,
@@ -261,7 +259,7 @@ class _CreateFamilySheetState extends State<_CreateFamilySheet> {
                       width: 3,
                     ),
                     boxShadow: selected
-                        ? [BoxShadow(color: col.withOpacity(0.5), blurRadius: 8)]
+                        ? [BoxShadow(color: col.withOpacity(0.5), blurRadius: 10)]
                         : [],
                   ),
                 ),
@@ -269,31 +267,32 @@ class _CreateFamilySheetState extends State<_CreateFamilySheet> {
             }).toList(),
           ),
           const SizedBox(height: 28),
-          GlassButton(
-              label: 'Создать', onTap: _create, isLoading: _loading),
+          GlassButton(label: 'Создать', onTap: _create, isLoading: _loading),
         ],
       ),
     );
   }
 
-  Color _hexColor(String hex) {
-    return Color(int.parse(hex.replaceFirst('#', '0xFF')));
-  }
+  Widget _label(String text) => Text(
+        text,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          color: AppColors.textSecondary,
+          fontSize: 13,
+        ),
+      );
 
-  Widget _field(String label, TextEditingController ctrl, {String hint = ''}) {
+  Widget _glassField(String label, TextEditingController ctrl,
+      {String hint = ''}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
-                fontSize: 13)),
+        _label(label),
         const SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(14),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: TextField(
               controller: ctrl,
               style: const TextStyle(
@@ -302,21 +301,18 @@ class _CreateFamilySheetState extends State<_CreateFamilySheet> {
                 hintText: hint,
                 hintStyle: const TextStyle(color: AppColors.textLight),
                 filled: true,
-                fillColor: Colors.white.withOpacity(0.25),
+                fillColor: Colors.white.withOpacity(0.35),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide:
-                      BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
+                  borderSide: BorderSide(color: Colors.white.withOpacity(0.5), width: 1.5),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide:
-                      BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
+                  borderSide: BorderSide(color: Colors.white.withOpacity(0.5), width: 1.5),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide:
-                      BorderSide(color: AppColors.primary.withOpacity(0.5), width: 1.5),
+                  borderSide: BorderSide(color: AppColors.primary.withOpacity(0.6), width: 2),
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -370,7 +366,7 @@ class _JoinFamilySheetState extends State<_JoinFamilySheet> {
         groupId: group['id'] as String,
         name: _nameCtrl.text.trim(),
         avatarEmoji: _emoji,
-        color: '#6C63FF',
+        color: '#6E5FFF',
       );
       final auth = widget.parent.read<AuthProvider>();
       final family = widget.parent.read<FamilyProvider>();
@@ -382,7 +378,7 @@ class _JoinFamilySheetState extends State<_JoinFamilySheet> {
       await family.loadGroup(group['id'] as String);
       if (mounted) Navigator.pop(context);
     } catch (e) {
-      setState(() => _error = 'Ошибка подключения. Попробуйте ещё раз.');
+      setState(() => _error = 'Ошибка. Попробуйте ещё раз.');
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -395,15 +391,11 @@ class _JoinFamilySheetState extends State<_JoinFamilySheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _field('Код приглашения', _codeCtrl, hint: 'ab12cd34'),
+          _glassField('Код приглашения', _codeCtrl, hint: 'AB12CD34'),
           const SizedBox(height: 16),
-          _field('Ваше имя', _nameCtrl, hint: 'Папа / Мама / Имя'),
+          _glassField('Ваше имя', _nameCtrl, hint: 'Папа / Мама / Имя'),
           const SizedBox(height: 20),
-          const Text('Аватар',
-              style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
-                  fontSize: 13)),
+          _label('Аватар'),
           const SizedBox(height: 10),
           Row(
             children: _emojis.map((e) {
@@ -418,26 +410,30 @@ class _JoinFamilySheetState extends State<_JoinFamilySheet> {
                   decoration: BoxDecoration(
                     color: selected
                         ? AppColors.primary.withOpacity(0.15)
-                        : Colors.white.withOpacity(0.3),
+                        : Colors.white.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: selected
-                          ? AppColors.primary
-                          : Colors.white.withOpacity(0.4),
+                      color: selected ? AppColors.primary : Colors.white.withOpacity(0.5),
                       width: selected ? 2 : 1,
                     ),
                   ),
-                  child: Center(
-                      child: Text(e, style: const TextStyle(fontSize: 22))),
+                  child: Center(child: Text(e, style: const TextStyle(fontSize: 22))),
                 ),
               );
             }).toList(),
           ),
           if (_error != null) ...[
             const SizedBox(height: 16),
-            Text(_error!,
-                style:
-                    const TextStyle(color: AppColors.error, fontSize: 14)),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.error.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.error.withOpacity(0.3)),
+              ),
+              child: Text(_error!,
+                  style: const TextStyle(color: AppColors.error, fontSize: 14)),
+            ),
           ],
           const SizedBox(height: 28),
           GlassButton(label: 'Войти', onTap: _join, isLoading: _loading),
@@ -446,20 +442,26 @@ class _JoinFamilySheetState extends State<_JoinFamilySheet> {
     );
   }
 
-  Widget _field(String label, TextEditingController ctrl, {String hint = ''}) {
+  Widget _label(String text) => Text(
+        text,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+          color: AppColors.textSecondary,
+          fontSize: 13,
+        ),
+      );
+
+  Widget _glassField(String label, TextEditingController ctrl,
+      {String hint = ''}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSecondary,
-                fontSize: 13)),
+        _label(label),
         const SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(14),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: TextField(
               controller: ctrl,
               style: const TextStyle(
@@ -468,21 +470,18 @@ class _JoinFamilySheetState extends State<_JoinFamilySheet> {
                 hintText: hint,
                 hintStyle: const TextStyle(color: AppColors.textLight),
                 filled: true,
-                fillColor: Colors.white.withOpacity(0.25),
+                fillColor: Colors.white.withOpacity(0.35),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide:
-                      BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
+                  borderSide: BorderSide(color: Colors.white.withOpacity(0.5), width: 1.5),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide:
-                      BorderSide(color: Colors.white.withOpacity(0.3), width: 1),
+                  borderSide: BorderSide(color: Colors.white.withOpacity(0.5), width: 1.5),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: BorderSide(
-                      color: AppColors.primary.withOpacity(0.5), width: 1.5),
+                  borderSide: BorderSide(color: AppColors.primary.withOpacity(0.6), width: 2),
                 ),
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -504,19 +503,27 @@ class _BottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFDDE8F8), Color(0xFFEDE8F8)],
+          colors: [
+            AppColors.bg1.withOpacity(0.98),
+            AppColors.bg2.withOpacity(0.98),
+          ],
         ),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        border: const Border(
+          top: BorderSide(color: Colors.white, width: 1.5),
+          left: BorderSide(color: Colors.white, width: 1.5),
+          right: BorderSide(color: Colors.white, width: 1.5),
+        ),
       ),
       padding: EdgeInsets.only(
         left: 24,
         right: 24,
         top: 16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 28,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -524,19 +531,19 @@ class _BottomSheet extends StatelessWidget {
         children: [
           Center(
             child: Container(
-              width: 40,
+              width: 44,
               height: 4,
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.12),
+                color: AppColors.textLight.withOpacity(0.4),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 22),
           Text(title,
               style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
                   color: AppColors.textPrimary)),
           const SizedBox(height: 24),
           child,
