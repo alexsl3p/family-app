@@ -30,7 +30,7 @@ export default function HomeScreen() {
       >
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>{greeting}, семья! 👋</Text>
+            <Text style={styles.greeting}>{greeting}, семья!</Text>
             <Text style={styles.subtitle}>Всё нужное в одном месте</Text>
           </View>
           <AvatarBubble name="Family OS" color={Colors.accent} size={48} />
@@ -126,8 +126,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: Spacing.lg,
   },
-  greeting: { fontSize: 24, fontWeight: '700', color: Colors.textPrimary, letterSpacing: -0.5 },
-  subtitle: { fontSize: 14, color: Colors.textSecondary, marginTop: 2 },
+  greeting: { fontSize: 27, fontWeight: '800', color: Colors.textPrimary, letterSpacing: -0.7 },
+  subtitle: { fontSize: 14, color: Colors.textSecondary, marginTop: 3, letterSpacing: -0.1 },
   statsRow: { flexDirection: 'row', gap: 10, marginBottom: Spacing.lg },
   statCard: { flex: 1 },
   statCardInner: { alignItems: 'center' },
@@ -143,9 +143,10 @@ const styles = StyleSheet.create({
   statNum: { fontSize: 22, fontWeight: '700', color: Colors.textPrimary },
   statLabel: { fontSize: 11, color: Colors.textSecondary, textAlign: 'center' },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: Colors.textPrimary,
+    letterSpacing: -0.4,
     marginBottom: Spacing.sm,
     marginTop: Spacing.sm,
   },

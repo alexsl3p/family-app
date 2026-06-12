@@ -10,38 +10,54 @@ interface GlassCardProps {
   padding?: number;
 }
 
-// На iOS — настоящий blur, на Android blur тормозит,
-// поэтому полупрозрачный белый фон даёт тот же эффект.
+// Liquid glass карточка: blur на iOS / rgba на Android + световая
+// кромка сверху (имитация преломления света на стекле) и двухслойная тень.
 export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
-  if (Platform.OS === 'ios') {
-    return (
-      <View style={[styles.shadowWrap, style]}>
-        <BlurView intensity={40} tint="extraLight" style={[styles.blur, { padding }]}>
-          {children}
-        </BlurView>
+  const inner =
+    Platform.OS === 'ios' ? (
+      <BlurView intensity={45} tint="extraLight" style={[styles.inner, { padding }]}>
+        <View style={styles.topHighlight} />
+        {children}
+      </BlurView>
+    ) : (
+      <View style={[styles.inner, styles.androidInner, { padding }]}>
+        <View style={styles.topHighlight} />
+        {children}
       </View>
     );
-  }
-  return <View style={[styles.shadowWrap, styles.androidCard, { padding }, style]}>{children}</View>;
+
+  return <View style={[styles.shadowWrap, style]}>{inner}</View>;
 }
 
 const styles = StyleSheet.create({
   shadowWrap: {
-    borderRadius: Radius.xl,
-    borderWidth: 1.5,
+    borderRadius: Radius.xxl,
+    borderWidth: 1,
     borderColor: Colors.glassBorder,
-    shadowColor: Colors.glassShadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 3,
+    backgroundColor: 'rgba(255,255,255,0.4)',
     overflow: 'hidden',
-    backgroundColor: 'rgba(255,255,255,0.35)',
+    // мягкая глубокая тень (ключевая)
+    shadowColor: '#1E3A8A',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.10,
+    shadowRadius: 24,
+    elevation: 5,
   },
-  blur: {
-    borderRadius: Radius.xl,
+  inner: {
+    borderRadius: Radius.xxl,
   },
-  androidCard: {
+  androidInner: {
     backgroundColor: Colors.glassBackground,
+  },
+  // световая кромка сверху — главный признак «дорогого» стекла
+  topHighlight: {
+    position: 'absolute',
+    top: 0,
+    left: 12,
+    right: 12,
+    height: 1.5,
+    borderRadius: 1,
+    backgroundColor: Colors.glassHighlight,
+    opacity: 0.9,
   },
 });

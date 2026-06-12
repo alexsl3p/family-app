@@ -3,14 +3,9 @@ import { Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'r
 import { Tabs, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/colors';
-
-// Минимальный тип пропсов таб-бара (не тянем @react-navigation/bottom-tabs напрямую)
-interface TabBarProps {
-  state: { index: number; routes: { name: string; key: string }[] };
-  navigation: { navigate: (name: string) => void };
-}
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
@@ -28,19 +23,26 @@ const FAB_ACTIONS: { icon: IconName; label: string; route: string }[] = [
   { icon: 'list-outline', label: 'Создать список покупок', route: '/shopping/new-list' },
 ];
 
+// Минимальный тип пропсов таб-бара (не тянем @react-navigation/bottom-tabs напрямую)
+interface TabBarProps {
+  state: { index: number; routes: { name: string; key: string }[] };
+  navigation: { navigate: (name: string) => void };
+}
+
 function CustomTabBar({ state, navigation }: TabBarProps) {
   const [fabOpen, setFabOpen] = useState(false);
   const insets = useSafeAreaInsets();
   const currentRoute = state.routes[state.index]?.name;
 
-  const BarWrapper = Platform.OS === 'ios' ? BlurView : View;
-  const barProps = Platform.OS === 'ios' ? { intensity: 60, tint: 'extraLight' as const } : {};
+  // Плавающая «пилюля» — фирменный признак iOS liquid glass
+  const PillWrapper = Platform.OS === 'ios' ? BlurView : View;
+  const pillProps = Platform.OS === 'ios' ? { intensity: 70, tint: 'extraLight' as const } : {};
 
   return (
     <>
       {fabOpen && (
         <Pressable style={styles.fabOverlay} onPress={() => setFabOpen(false)}>
-          <View style={[styles.fabMenu, { marginBottom: 96 + insets.bottom }]}>
+          <View style={[styles.fabMenu, { marginBottom: 110 + insets.bottom }]}>
             {FAB_ACTIONS.map((action, idx) => (
               <TouchableOpacity
                 key={action.route}
@@ -61,50 +63,62 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
         </Pressable>
       )}
 
-      <BarWrapper {...barProps} style={[styles.tabBar, { paddingBottom: Math.max(insets.bottom, 10) }]}>
-        {TABS.map((tab) => {
-          if (!tab) {
-            return (
-              <TouchableOpacity
-                key="fab"
-                style={styles.fabWrapper}
-                onPress={() => setFabOpen((v) => !v)}
-                activeOpacity={0.8}
-              >
-                <View style={styles.fab}>
-                  <Ionicons name={fabOpen ? 'close' : 'add'} size={30} color="#fff" />
-                </View>
-              </TouchableOpacity>
-            );
-          }
-          const isFocused = currentRoute === tab.name;
-          return (
-            <TouchableOpacity
-              key={tab.name}
-              style={styles.tabItem}
-              onPress={() => {
-                setFabOpen(false);
-                if (!isFocused) navigation.navigate(tab.name);
-              }}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isFocused ? tab.iconActive : tab.icon}
-                size={24}
-                color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
-              />
-              <Text
-                style={[
-                  styles.tabLabel,
-                  { color: isFocused ? Colors.tabBarActive : Colors.tabBarInactive },
-                ]}
-              >
-                {tab.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </BarWrapper>
+      <View style={[styles.barArea, { paddingBottom: Math.max(insets.bottom, 12) }]}>
+        <View style={styles.pillShadow}>
+          <PillWrapper {...pillProps} style={styles.pill}>
+            <View style={styles.pillHighlight} />
+            {TABS.map((tab) => {
+              if (!tab) {
+                return (
+                  <Pressable
+                    key="fab"
+                    style={({ pressed }) => [styles.fabWrapper, pressed && styles.fabPressed]}
+                    onPress={() => setFabOpen((v) => !v)}
+                  >
+                    <LinearGradient
+                      colors={Colors.accentGradient}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                      style={styles.fab}
+                    >
+                      <Ionicons name={fabOpen ? 'close' : 'add'} size={30} color="#fff" />
+                    </LinearGradient>
+                  </Pressable>
+                );
+              }
+              const isFocused = currentRoute === tab.name;
+              return (
+                <TouchableOpacity
+                  key={tab.name}
+                  style={styles.tabItem}
+                  onPress={() => {
+                    setFabOpen(false);
+                    if (!isFocused) navigation.navigate(tab.name);
+                  }}
+                  activeOpacity={0.6}
+                >
+                  <Ionicons
+                    name={isFocused ? tab.iconActive : tab.icon}
+                    size={24}
+                    color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
+                  />
+                  <Text
+                    style={[
+                      styles.tabLabel,
+                      {
+                        color: isFocused ? Colors.tabBarActive : Colors.tabBarInactive,
+                        fontWeight: isFocused ? '600' : '500',
+                      },
+                    ]}
+                  >
+                    {tab.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </PillWrapper>
+        </View>
+      </View>
     </>
   );
 }
@@ -121,36 +135,61 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: Platform.OS === 'ios' ? 'rgba(255,255,255,0.5)' : Colors.tabBar,
-    borderTopWidth: 1.5,
-    borderTopColor: Colors.tabBarBorder,
-    paddingTop: 8,
-    paddingHorizontal: 8,
-    shadowColor: 'rgba(100, 160, 210, 0.3)',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 1,
-    shadowRadius: 16,
-    elevation: 8,
+  barArea: {
+    paddingHorizontal: 16,
+    paddingTop: 6,
+    backgroundColor: 'transparent',
   },
-  tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 4 },
-  tabLabel: { fontSize: 10, fontWeight: '500' },
-  fabWrapper: { flex: 1, alignItems: 'center', justifyContent: 'center', marginTop: -32 },
-  fab: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    backgroundColor: Colors.fabBackground,
+  pillShadow: {
+    borderRadius: 34,
+    shadowColor: '#1E3A8A',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.16,
+    shadowRadius: 28,
+    elevation: 10,
+  },
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 34,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: Platform.OS === 'ios' ? 'rgba(255,255,255,0.55)' : Colors.tabBar,
+    borderWidth: 1,
+    borderColor: Colors.glassBorder,
+    overflow: 'hidden',
+  },
+  pillHighlight: {
+    position: 'absolute',
+    top: 0,
+    left: 20,
+    right: 20,
+    height: 1.5,
+    backgroundColor: Colors.glassHighlight,
+    opacity: 0.9,
+  },
+  tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 3, paddingVertical: 2 },
+  tabLabel: { fontSize: 10, letterSpacing: -0.1 },
+  fabWrapper: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.fabShadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 12,
-    elevation: 6,
+    marginTop: -34,
+  },
+  fabPressed: { transform: [{ scale: 0.94 }] },
+  fab: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: Colors.accent,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.45,
+    shadowRadius: 16,
+    elevation: 8,
     borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.9)',
+    borderColor: 'rgba(255, 255, 255, 0.95)',
   },
   fabOverlay: {
     position: 'absolute',
@@ -158,32 +197,32 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(20, 40, 60, 0.25)',
+    backgroundColor: 'rgba(15, 23, 42, 0.35)',
     justifyContent: 'flex-end',
     zIndex: 10,
   },
   fabMenu: {
     marginHorizontal: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    borderRadius: 20,
-    borderWidth: 1.5,
+    backgroundColor: 'rgba(255, 255, 255, 0.97)',
+    borderRadius: 24,
+    borderWidth: 1,
     borderColor: Colors.glassBorder,
     padding: 6,
-    shadowColor: 'rgba(0, 0, 0, 0.18)',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 24,
-    elevation: 10,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.18,
+    shadowRadius: 32,
+    elevation: 12,
   },
-  fabMenuItem: { flexDirection: 'row', alignItems: 'center', padding: 13, gap: 12 },
+  fabMenuItem: { flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12 },
   fabMenuDivider: { borderBottomWidth: 1, borderBottomColor: Colors.glassDivider },
   fabMenuIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 13,
     backgroundColor: Colors.accentLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  fabMenuText: { fontSize: 16, color: Colors.textPrimary, fontWeight: '500' },
+  fabMenuText: { fontSize: 16, color: Colors.textPrimary, fontWeight: '500', letterSpacing: -0.2 },
 });

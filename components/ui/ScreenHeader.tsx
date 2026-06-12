@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.md,
   },
   textContainer: { flex: 1 },
-  title: { fontSize: 28, fontWeight: '700', color: Colors.textPrimary, letterSpacing: -0.5 },
-  subtitle: { fontSize: 14, color: Colors.textSecondary, marginTop: 2 },
+  title: { fontSize: 32, fontWeight: '800', color: Colors.textPrimary, letterSpacing: -0.8 },
+  subtitle: { fontSize: 14, color: Colors.textSecondary, marginTop: 3, letterSpacing: -0.1 },
   action: {
     width: 44,
     height: 44,
