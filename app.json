@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Family OS",
-    "slug": "family-os",
+    "slug": "family-app",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
