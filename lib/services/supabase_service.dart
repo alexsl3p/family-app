@@ -102,16 +102,15 @@ class SupabaseService {
       String groupId, void Function(dynamic) onEvent) {
     return _client
         .channel('family_tasks_$groupId')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: 'family_tasks',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'group_id',
-            value: groupId,
+        .on(
+          RealtimeListenTypes.postgresChanges,
+          ChannelFilter(
+            event: '*',
+            schema: 'public',
+            table: 'family_tasks',
+            filter: 'group_id=eq.$groupId',
           ),
-          callback: (payload) => onEvent(payload),
+          (payload, [ref]) => onEvent(payload),
         )
         .subscribe();
   }
@@ -179,16 +178,15 @@ class SupabaseService {
       String listId, void Function(dynamic) onEvent) {
     return _client
         .channel('shopping_items_$listId')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: 'family_shopping_items',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'list_id',
-            value: listId,
+        .on(
+          RealtimeListenTypes.postgresChanges,
+          ChannelFilter(
+            event: '*',
+            schema: 'public',
+            table: 'family_shopping_items',
+            filter: 'list_id=eq.$listId',
           ),
-          callback: (payload) => onEvent(payload),
+          (payload, [ref]) => onEvent(payload),
         )
         .subscribe();
   }
