@@ -25,7 +25,7 @@ export function GlassButton({
   style,
 }: GlassButtonProps) {
   const textColor =
-    variant === 'primary' ? '#fff' : variant === 'danger' ? Colors.error : Colors.accent;
+    variant === 'primary' ? Colors.textWhite : variant === 'danger' ? Colors.error : Colors.accentBright;
 
   const content = () => (
     <>
@@ -95,29 +95,29 @@ const styles = StyleSheet.create({
   shadow: {
     borderRadius: Radius.full,
     overflow: 'hidden',
-    shadowColor: Colors.accent,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.40,
-    shadowRadius: 16,
+    shadowOpacity: 0.50,
+    shadowRadius: 14,
     elevation: 6,
   },
   ghost: {
-    backgroundColor: 'rgba(255, 255, 255, 0.80)',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.90)',
-    shadowColor: '#6040B8',
+    backgroundColor: 'rgba(255, 255, 255, 0.07)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
+    shadowOpacity: 0.30,
+    shadowRadius: 10,
     elevation: 3,
   },
   danger: {
     backgroundColor: Colors.errorLight,
     borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.25)',
+    borderColor: 'rgba(248, 113, 113, 0.25)',
   },
-  disabled: { opacity: 0.45 },
-  pressed: { transform: [{ scale: 0.97 }], opacity: 0.90 },
+  disabled: { opacity: 0.40 },
+  pressed: { transform: [{ scale: 0.97 }], opacity: 0.88 },
   icon: { marginRight: 8 },
   text: { fontSize: 16, fontWeight: '600', letterSpacing: -0.2 },
 });

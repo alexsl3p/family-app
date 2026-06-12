@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { GlassCard } from '@/components/ui/GlassCard';
@@ -55,9 +56,11 @@ export default function FamilyScreen() {
         <Text style={styles.sectionTitle}>Участники</Text>
         <GlassCard padding={0}>
           {MOCK_MEMBERS.map((member, idx) => (
-            <View
+            <TouchableOpacity
               key={member.id}
               style={[styles.memberItem, idx < MOCK_MEMBERS.length - 1 && styles.memberBorder]}
+              onPress={() => router.push(`/family/${member.id}` as never)}
+              activeOpacity={0.7}
             >
               <AvatarBubble name={member.name} color={member.color} size={44} />
               <View style={styles.memberBody}>
@@ -70,7 +73,8 @@ export default function FamilyScreen() {
                   <Text style={styles.roleText}>Создатель</Text>
                 </View>
               )}
-            </View>
+              <Ionicons name="chevron-forward" size={16} color={Colors.textMuted} />
+            </TouchableOpacity>
           ))}
         </GlassCard>
 

@@ -8,10 +8,11 @@ export function ScreenBackground({ children }: { children: React.ReactNode }) {
   return (
     <LinearGradient
       colors={[Colors.bgGradientStart, Colors.bgGradientMid, Colors.bgGradientEnd]}
-      start={{ x: 0.1, y: 0 }}
-      end={{ x: 0.9, y: 1 }}
+      start={{ x: 0.2, y: 0 }}
+      end={{ x: 0.8, y: 1 }}
       style={styles.container}
     >
+      {/* Subtle purple glow orbs */}
       <View style={[styles.orb, styles.orbTopRight]} />
       <View style={[styles.orb, styles.orbBottomLeft]} />
       <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -26,17 +27,17 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1 },
   orb: { position: 'absolute', borderRadius: 9999 },
   orbTopRight: {
-    width: 300,
-    height: 300,
-    top: -80,
-    right: -80,
+    width: 320,
+    height: 320,
+    top: -100,
+    right: -100,
     backgroundColor: Colors.orbBlue,
   },
   orbBottomLeft: {
-    width: 260,
-    height: 260,
+    width: 280,
+    height: 280,
     bottom: 60,
-    left: -70,
+    left: -90,
     backgroundColor: Colors.orbViolet,
   },
 });

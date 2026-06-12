@@ -8,8 +8,8 @@ interface GlassCardProps {
   padding?: number;
 }
 
-// Soft UI card: white panel with purple-tinted soft shadow and white border highlight.
-// No blur — clean neumorphic lift against the lavender background.
+// Dark neumorphic panel: тёмное полупрозрачное стекло на тёмном фоне.
+// Тень снизу + белый хайлайт сверху создают neumorphic «выдавленный» эффект.
 export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
   return (
     <View style={[styles.card, style]}>
@@ -22,25 +22,23 @@ export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
 const styles = StyleSheet.create({
   card: {
     borderRadius: Radius.xxl,
-    backgroundColor: 'rgba(255, 255, 255, 0.82)',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.92)',
-    shadowColor: '#6040B8',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.16,
-    shadowRadius: 22,
-    elevation: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.10)',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.45,
+    shadowRadius: 24,
+    elevation: 8,
     overflow: 'hidden',
   },
-  // Top inner highlight — simulates neumorphic top-light
   topHighlight: {
     position: 'absolute',
     top: 0,
     left: 16,
     right: 16,
-    height: 1.5,
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
     borderRadius: 1,
-    backgroundColor: 'rgba(255, 255, 255, 1)',
-    opacity: 0.85,
   },
 });

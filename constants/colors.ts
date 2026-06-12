@@ -1,54 +1,54 @@
-// Soft UI / Neumorphism palette — light lavender base, electric purple accent
+// Dark Neumorphism — глубокий тёмный фиолетово-чёрный + сереневый акцент
 export const Colors = {
-  // Background — lavender gradient
-  bgGradientStart: '#EDE8FF',
-  bgGradientMid: '#E4DCFF',
-  bgGradientEnd: '#D8CDFF',
+  // Фон — тёмный фиолетово-чёрный
+  bgGradientStart: '#16122A',
+  bgGradientMid: '#1B1632',
+  bgGradientEnd: '#201B3C',
 
-  // Soft orbs (very subtle, match theme)
-  orbBlue: 'rgba(139, 92, 246, 0.14)',
-  orbViolet: 'rgba(236, 72, 153, 0.08)',
-  orbCyan: 'rgba(167, 139, 250, 0.18)',
+  // Мягкие глоу-пятна
+  orbBlue: 'rgba(130, 110, 210, 0.10)',
+  orbViolet: 'rgba(190, 130, 240, 0.07)',
+  orbCyan: 'rgba(110, 90, 190, 0.09)',
 
-  // Cards / soft panels
-  glassBackground: 'rgba(255, 255, 255, 0.80)',
-  glassBackgroundStrong: 'rgba(255, 255, 255, 0.94)',
-  glassBorder: 'rgba(255, 255, 255, 0.90)',
-  glassHighlight: 'rgba(255, 255, 255, 1)',
-  glassShadow: 'rgba(96, 64, 184, 0.18)',
-  glassDivider: 'rgba(180, 160, 240, 0.22)',
+  // Карточки — тёмные полупрозрачные панели
+  glassBackground: 'rgba(255, 255, 255, 0.06)',
+  glassBackgroundStrong: 'rgba(255, 255, 255, 0.10)',
+  glassBorder: 'rgba(255, 255, 255, 0.10)',
+  glassHighlight: 'rgba(255, 255, 255, 0.18)',
+  glassShadow: 'rgba(0, 0, 0, 0.55)',
+  glassDivider: 'rgba(255, 255, 255, 0.07)',
 
-  // Text — deep purple-navy
-  textPrimary: '#1E1648',
-  textSecondary: '#5E5288',
-  textMuted: '#A097BF',
+  // Текст
+  textPrimary: '#EDE8FF',     // почти белый, лёгкий лавандовый оттенок
+  textSecondary: '#9490B8',   // средне-сереневый
+  textMuted: '#5A5478',       // тёмный сереневый
   textWhite: '#FFFFFF',
 
-  // Accent — electric violet
-  accent: '#7C5CF6',
-  accentBright: '#9B7EFF',
-  accentLight: 'rgba(124, 92, 246, 0.12)',
-  accentDark: '#6040D4',
-  accentGradient: ['#A78BFA', '#7C5CF6'] as const,
+  // Акцент — сереневый (серо-лавандовый)
+  accent: '#9490B8',
+  accentBright: '#B0ACCC',
+  accentLight: 'rgba(148, 144, 184, 0.18)',
+  accentDark: '#7470A0',
+  accentGradient: ['#B4AEDD', '#8880BE'] as const,
 
-  // Status
-  success: '#10B981',
-  successLight: 'rgba(16, 185, 129, 0.12)',
-  warning: '#F59E0B',
-  warningLight: 'rgba(245, 158, 11, 0.12)',
-  error: '#EF4444',
-  errorLight: 'rgba(239, 68, 68, 0.10)',
+  // Статусы (приглушённые под тёмный фон)
+  success: '#4ADE80',
+  successLight: 'rgba(74, 222, 128, 0.12)',
+  warning: '#FBBF24',
+  warningLight: 'rgba(251, 191, 36, 0.12)',
+  error: '#F87171',
+  errorLight: 'rgba(248, 113, 113, 0.10)',
 
-  // Tab bar (white pill)
-  tabBar: 'rgba(255, 255, 255, 0.86)',
-  tabBarBorder: 'rgba(255, 255, 255, 0.92)',
-  tabBarActive: '#7C5CF6',
-  tabBarInactive: '#B8ACD8',
+  // Навигация
+  tabBar: 'rgba(255, 255, 255, 0.07)',
+  tabBarBorder: 'rgba(255, 255, 255, 0.11)',
+  tabBarActive: '#B4AEDD',
+  tabBarInactive: '#5A5478',
 
   // FAB
-  fabBackground: '#7C5CF6',
-  fabShadow: 'rgba(124, 92, 246, 0.45)',
+  fabBackground: '#9490B8',
+  fabShadow: 'rgba(0, 0, 0, 0.60)',
 
-  // Member avatar palette
-  memberColors: ['#EC4899', '#F59E0B', '#10B981', '#7C5CF6', '#8B5CF6', '#06B6D4'],
+  // Палитра участников
+  memberColors: ['#EC4899', '#FBBF24', '#4ADE80', '#9490B8', '#A78BFA', '#22D3EE'],
 };
