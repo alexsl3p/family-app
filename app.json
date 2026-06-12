@@ -32,10 +32,16 @@
     "updates": {
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/1672daa7-1017-4120-a16d-e1a836d803bb"
     },
     "runtimeVersion": {
       "policy": "appVersion"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1672daa7-1017-4120-a16d-e1a836d803bb"
+      }
     }
   }
 }
