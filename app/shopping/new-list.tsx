@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.07)',
     borderRadius: Radius.lg,
-    borderWidth: 1.5,
-    borderColor: Colors.glassBorder,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
     padding: 14,
     fontSize: 16,
     color: Colors.textPrimary,

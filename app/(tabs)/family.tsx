@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useUIStore } from '@/store/uiStore';
 import { ScreenBackground } from '@/components/ui/ScreenBackground';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
@@ -21,6 +22,13 @@ const MOCK_MEMBERS = [
 const INVITE_CODE = 'A7K9Q2PM';
 
 export default function FamilyScreen() {
+  const logout = useUIStore((s) => s.logout);
+
+  const handleLogout = () => {
+    logout();
+    router.replace('/');
+  };
+
   return (
     <ScreenBackground>
       <ScreenHeader title="Семья" subtitle="Ваша Family OS" />
@@ -78,9 +86,13 @@ export default function FamilyScreen() {
           ))}
         </GlassCard>
 
-        <TouchableOpacity style={styles.leaveBtn} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.leaveBtn} onPress={handleLogout} activeOpacity={0.7}>
           <Ionicons name="exit-outline" size={18} color={Colors.error} />
           <Text style={styles.leaveText}>Выйти из семьи</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.leaveBtn} onPress={handleLogout} activeOpacity={0.7}>
+          <Ionicons name="log-out-outline" size={18} color={Colors.textMuted} />
+          <Text style={styles.reLoginText}>Войти под другим аккаунтом</Text>
         </TouchableOpacity>
 
         <View style={{ height: 24 }} />
@@ -155,4 +167,5 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   leaveText: { fontSize: 15, color: Colors.error, fontWeight: '500' },
+  reLoginText: { fontSize: 15, color: Colors.textMuted, fontWeight: '500' },
 });

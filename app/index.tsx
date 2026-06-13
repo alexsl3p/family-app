@@ -1,7 +1,8 @@
 import { Redirect } from 'expo-router';
+import { useUIStore } from '@/store/uiStore';
 
 export default function Index() {
-  // Auth guard появится после подключения Supabase Auth;
-  // пока всегда стартуем с welcome.
+  const hasCompletedOnboarding = useUIStore((s) => s.hasCompletedOnboarding);
+  if (hasCompletedOnboarding) return <Redirect href="/(tabs)" />;
   return <Redirect href="/(auth)/welcome" />;
 }
