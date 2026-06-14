@@ -115,7 +115,12 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
               })}
             </BlurView>
           ) : (
-          <View style={styles.pill}>
+          <LinearGradient
+            colors={['rgba(50, 18, 5, 0.94)', 'rgba(28, 10, 2, 0.97)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.pill}
+          >
             <View style={styles.pillHighlight} />
             {TABS.map((tab) => {
               if (!tab) {
@@ -166,7 +171,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
                 </TouchableOpacity>
               );
             })}
-          </View>
+          </LinearGradient>
           )}
         </View>
       </View>
@@ -194,10 +199,10 @@ const styles = StyleSheet.create({
   pillShadow: {
     borderRadius: 34,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.55,
-    shadowRadius: 24,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.65,
+    shadowRadius: 28,
+    elevation: 14,
   },
   pill: {
     flexDirection: 'row',
@@ -205,9 +210,8 @@ const styles = StyleSheet.create({
     borderRadius: 34,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    backgroundColor: Colors.tabBar,
     borderWidth: 1,
-    borderColor: Colors.tabBarBorder,
+    borderColor: 'rgba(255, 140, 60, 0.35)',
     overflow: 'hidden',
   },
   pillBlur: {
@@ -217,7 +221,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: Colors.tabBarBorder,
+    borderColor: 'rgba(255, 180, 100, 0.30)',
     overflow: 'hidden',
   },
   pillHighlight: {
@@ -225,9 +229,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 20,
     right: 20,
-    height: 1.5,
-    backgroundColor: Colors.glassHighlight,
-    opacity: 0.9,
+    height: 1,
+    backgroundColor: 'rgba(255, 180, 80, 0.45)',
   },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 3, paddingVertical: 2 },
   tabLabel: { fontSize: 10, letterSpacing: -0.1 },

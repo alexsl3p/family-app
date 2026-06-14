@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Radius } from '@/constants/radius';
 
 interface GlassCardProps {
@@ -9,18 +10,15 @@ interface GlassCardProps {
   padding?: number;
 }
 
-// Premium glassmorphism card поверх закатного фото:
-// iOS — настоящий BlurView intensity 52 (frosted glass, sunset просвечивает)
-// Android — тёплый rgba с белой border.
-// Skill-рекомендации: border rgba(255,255,255,0.35), highlight 0.65, shadow 0.40.
+// iOS: настоящий BlurView (frosted glass) поверх закатной фотографии
+// Android: gradient-border техника — LinearGradient в 1px выглядит как переливающийся ободок,
+//          тёмное тёплое стекло внутри. Без elevation (на Android transparent + elevation = белые артефакты).
 export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
   if (Platform.OS === 'ios') {
     return (
-      <View style={[styles.shadow, style]}>
+      <View style={[styles.iosShadow, style]}>
         <BlurView intensity={52} tint="light" style={styles.blur}>
-          {/* Тёплый тинт поверх blur — слабый, чтобы не перекрывать стекло */}
           <View style={styles.warmTint} />
-          {/* Световой блик на верхнем крае — refraction line */}
           <View style={styles.highlight} />
           <View style={{ padding }}>{children}</View>
         </BlurView>
@@ -28,26 +26,36 @@ export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
     );
   }
 
+  // Android: gradient border = LinearGradient с padding 1.5px создаёт ободок-радугу
   return (
-    <View style={[styles.shadow, style]}>
-      <View style={[styles.androidCard, { padding }]}>
-        <View style={styles.warmTint} />
-        <View style={styles.highlight} />
-        {children}
-      </View>
+    <View style={[styles.androidOuter, style]}>
+      <LinearGradient
+        colors={[
+          'rgba(255, 160, 80, 0.60)',
+          'rgba(255, 240, 210, 0.22)',
+          'rgba(200, 70, 20, 0.55)',
+        ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.gradientBorder}
+      >
+        <View style={[styles.androidInner, { padding }]}>
+          <View style={styles.warmTint} />
+          {children}
+        </View>
+      </LinearGradient>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  shadow: {
+  // iOS shadow wrapper — overflow:hidden здесь обрезает blur, не shadow
+  iosShadow: {
     borderRadius: Radius.xxl,
-    // Тёмная тень снизу — даёт z-глубину над фоном
-    shadowColor: '#000000',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.40,
+    shadowOpacity: 0.38,
     shadowRadius: 20,
-    elevation: 8,
     overflow: 'hidden',
   },
   blur: {
@@ -56,28 +64,35 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.35)',
     overflow: 'hidden',
   },
-  androidCard: {
-    borderRadius: Radius.xxl,
-    // rgba тёплое стекло на Android
-    backgroundColor: 'rgba(255, 230, 200, 0.18)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.35)',
-    overflow: 'hidden',
-  },
-  // Тёплый тинт — чтобы cold blur не "обесцвечивал" закат
+  // Тёплый тинт — закат слегка просвечивает сквозь стекло
   warmTint: {
     position: 'absolute',
     top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(255, 180, 100, 0.07)',
+    backgroundColor: 'rgba(255, 110, 40, 0.06)',
   },
-  // Световой блик — имитация преломления света на стекле
+  // Световой блик — только iOS (с blur выглядит как преломление)
   highlight: {
     position: 'absolute',
     top: 0,
     left: 14,
     right: 14,
     height: 1.5,
-    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    backgroundColor: 'rgba(255, 255, 255, 0.60)',
     borderRadius: 1,
+  },
+  // Android: обёртка без elevation (избегаем белых артефактов Android)
+  androidOuter: {
+    borderRadius: Radius.xxl,
+  },
+  // LinearGradient служит "рамкой" толщиной 1.5px с градиентом заката
+  gradientBorder: {
+    borderRadius: Radius.xxl,
+    padding: 1.5,
+  },
+  // Тёмное тёплое стекло внутри
+  androidInner: {
+    borderRadius: Radius.xxl - 1,
+    backgroundColor: 'rgba(18, 8, 3, 0.68)',
+    overflow: 'hidden',
   },
 });
