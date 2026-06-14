@@ -42,19 +42,20 @@ function TabItem({
 }) {
   return (
     <TouchableOpacity
-      style={[styles.navIcon, isFocused && styles.navIconActive]}
+      style={styles.tabSlot}
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <Ionicons
-        name={isFocused ? tab.iconActive : tab.icon}
-        size={22}
-        color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
-        style={isFocused ? styles.iconFloat : undefined}
-      />
-      <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
-        {tab.label}
-      </Text>
+      <View style={[styles.navPill, isFocused && styles.navPillActive]}>
+        <Ionicons
+          name={isFocused ? tab.iconActive : tab.icon}
+          size={22}
+          color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
+        />
+        <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
+          {tab.label}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -217,23 +218,25 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
   topHighlight: {},
-  // Таб-иконка — чистая, без фона
-  navIcon: {
+  // Outer slot — flex:1 so items space evenly regardless of label width
+  tabSlot: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 6,
-    paddingHorizontal: 4,
-    borderRadius: 16,
+  },
+  // Inner pill — wraps tightly around icon + label (matches Stitch px-4 py-1.5 rounded-xl)
+  navPill: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 7,
+    paddingHorizontal: 14,
+    borderRadius: 14,
     gap: 3,
   },
-  // Stitch: bg-primary-container  (active pill — deep purple filled)
-  navIconActive: {
+  // Stitch: bg-primary-container text-on-primary-container
+  navPillActive: {
     backgroundColor: Colors.tabBarActiveContainer,
-    borderRadius: 14,
-  },
-  iconFloat: {
-    transform: [{ translateY: -1 }],
   },
   tabLabel: {
     fontSize: 10,
