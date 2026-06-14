@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     gap: 8, paddingVertical: 16,
     borderRadius: 18, borderWidth: 1.5,
     borderColor: `${Colors.accent}55`,
-    borderStyle: 'dashed',
+    backgroundColor: Colors.accentLight,
   },
   addBtnText: { fontSize: 15, color: Colors.accent, fontWeight: '600' },
 });

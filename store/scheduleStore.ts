@@ -1,6 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface ScheduleSlot {
   id: string;
@@ -18,28 +16,20 @@ interface ScheduleState {
   removeSlot: (memberId: string, slotId: string) => void;
 }
 
-export const useScheduleStore = create<ScheduleState>()(
-  persist(
-    (set) => ({
-      schedules: {},
-      addSlot: (memberId, slot) =>
-        set((s) => ({
-          schedules: {
-            ...s.schedules,
-            [memberId]: [...(s.schedules[memberId] ?? []), slot],
-          },
-        })),
-      removeSlot: (memberId, slotId) =>
-        set((s) => ({
-          schedules: {
-            ...s.schedules,
-            [memberId]: (s.schedules[memberId] ?? []).filter((sl) => sl.id !== slotId),
-          },
-        })),
-    }),
-    {
-      name: 'schedule-store',
-      storage: createJSONStorage(() => AsyncStorage),
-    },
-  ),
-);
+export const useScheduleStore = create<ScheduleState>()((set) => ({
+  schedules: {},
+  addSlot: (memberId, slot) =>
+    set((s) => ({
+      schedules: {
+        ...s.schedules,
+        [memberId]: [...(s.schedules[memberId] ?? []), slot],
+      },
+    })),
+  removeSlot: (memberId, slotId) =>
+    set((s) => ({
+      schedules: {
+        ...s.schedules,
+        [memberId]: (s.schedules[memberId] ?? []).filter((sl) => sl.id !== slotId),
+      },
+    })),
+}));
