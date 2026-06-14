@@ -156,7 +156,13 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
 
 export default function TabLayout() {
   return (
-    <Tabs tabBar={(props) => <CustomTabBar {...props} />} screenOptions={{ headerShown: false }}>
+    <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { backgroundColor: 'transparent', borderTopWidth: 0, elevation: 0 },
+      }}
+    >
       <Tabs.Screen name="index" />
       <Tabs.Screen name="tasks" />
       <Tabs.Screen name="shopping" />
@@ -204,10 +210,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     gap: 3,
   },
-  // Активный — едва заметный полупрозрачный фон
-  navIconActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.10)',
-  },
+  // Активный — только цвет иконки меняется, без фона
+  navIconActive: {},
   iconFloat: {
     transform: [{ translateY: -1 }],
   },
