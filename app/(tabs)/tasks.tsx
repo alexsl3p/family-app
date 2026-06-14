@@ -217,13 +217,13 @@ const styles = StyleSheet.create({
   },
   tagText: { fontSize: 11, fontWeight: '600' },
 
-  // Priority pill
+  // Priority pill — pink like Stitch
   priorityPill: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: Colors.accentLight,
+    backgroundColor: Colors.pinkLight,
     paddingHorizontal: 8, paddingVertical: 3,
     borderRadius: 99,
-    borderWidth: 1, borderColor: 'rgba(74,144,255,0.30)',
+    borderWidth: 1, borderColor: 'rgba(236,72,153,0.35)',
   },
-  priorityPillText: { fontSize: 11, fontWeight: '600', color: Colors.accent },
+  priorityPillText: { fontSize: 11, fontWeight: '600', color: Colors.pink },
 });

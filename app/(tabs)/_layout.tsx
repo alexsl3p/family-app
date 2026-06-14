@@ -222,9 +222,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     gap: 3,
   },
-  // Активный — синяя pill-подсветка под иконкой
+  // Активный — фиолетовая pill-подсветка под иконкой
   navIconActive: {
-    backgroundColor: 'rgba(74,144,255,0.18)',
+    backgroundColor: 'rgba(139,92,246,0.22)',
     borderRadius: 14,
   },
   iconFloat: {
