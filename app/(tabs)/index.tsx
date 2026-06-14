@@ -8,6 +8,8 @@ import { AvatarBubble } from '@/components/ui/AvatarBubble';
 import { Colors } from '@/constants/colors';
 import { Spacing } from '@/constants/spacing';
 import { useWeather } from '@/features/weather/hooks';
+import { useScheduleStore } from '@/store/scheduleStore';
+import { getCurrentStatus } from '@/lib/scheduleUtils';
 
 const MOCK_PRIORITY_TASK = {
   id: '0',
@@ -26,10 +28,24 @@ const MOCK_TASKS = [
 const MOCK_SHOPPING = ['Молоко 2л', 'Хлеб', 'Яблоки 1кг', 'Сыр'];
 
 const MOCK_MEMBERS = [
-  { name: 'Мама', color: '#FF7849', status: 'На работе' },
-  { name: 'Папа', color: '#60A5FA', status: 'В дороге' },
-  { name: 'Лёня', color: '#4ADE80', status: 'В школе' },
+  { id: '1', name: 'Мама', color: '#FF7849', defaultStatus: 'Дома' },
+  { id: '2', name: 'Папа', color: '#60A5FA', defaultStatus: 'Дома' },
+  { id: '3', name: 'Лёня', color: '#4ADE80', defaultStatus: 'Дома' },
 ];
+
+function MemberStatus({ member }: { member: typeof MOCK_MEMBERS[number] }) {
+  const schedules = useScheduleStore((s) => s.schedules);
+  const slots = schedules[member.id] ?? [];
+  const status = getCurrentStatus(slots) ?? member.defaultStatus;
+  const isActive = status !== 'Дома';
+  return (
+    <View style={styles.memberItem}>
+      <AvatarBubble name={member.name} color={member.color} size={44} />
+      <Text style={styles.memberName}>{member.name}</Text>
+      <Text style={[styles.memberStatus, isActive && { color: Colors.success }]}>{status}</Text>
+    </View>
+  );
+}
 
 export default function HomeScreen() {
   const hour = new Date().getHours();
@@ -140,11 +156,7 @@ export default function HomeScreen() {
         <GlassCard padding={12}>
           <View style={styles.membersRow}>
             {MOCK_MEMBERS.map((m) => (
-              <View key={m.name} style={styles.memberItem}>
-                <AvatarBubble name={m.name} color={m.color} size={44} />
-                <Text style={styles.memberName}>{m.name}</Text>
-                <Text style={styles.memberStatus}>{m.status}</Text>
-              </View>
+              <MemberStatus key={m.id} member={m} />
             ))}
           </View>
         </GlassCard>
