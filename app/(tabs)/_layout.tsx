@@ -160,7 +160,15 @@ export default function TabLayout() {
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: 'transparent', borderTopWidth: 0, elevation: 0 },
+        // sceneStyle transparent позволяет ScreenBackground заходить под таббар
+        sceneStyle: { backgroundColor: 'transparent' },
+        tabBarStyle: {
+          position: 'absolute',
+          backgroundColor: 'transparent',
+          borderTopWidth: 0,
+          elevation: 0,
+          shadowOpacity: 0,
+        },
       }}
     >
       <Tabs.Screen name="index" />
@@ -172,32 +180,25 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  // Нет фона, нет контейнера — иконки плавают прямо на фоне
   barArea: {
-    paddingHorizontal: 8,
-    paddingTop: 4,
+    paddingHorizontal: 16,
+    paddingTop: 6,
     backgroundColor: 'transparent',
   },
   navShadow: {},
-  // iOS BlurView — прозрачный, без фона
-  navBarBlur: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-    paddingVertical: 4,
-    paddingHorizontal: 4,
-    backgroundColor: 'transparent',
-    overflow: 'visible',
-  },
-  // Android — тоже прозрачный
+  navBarBlur: {},
+  // Тёмный pill — надёжно на любом фоне
   navBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    paddingVertical: 4,
-    paddingHorizontal: 4,
-    backgroundColor: 'transparent',
-    overflow: 'visible',
+    borderRadius: 36,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    backgroundColor: 'rgba(12, 8, 5, 0.82)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.10)',
+    overflow: 'hidden',
   },
   topHighlight: {},
   // Таб-иконка — чистая, без фона
