@@ -23,14 +23,7 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router",
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Разрешите доступ к геолокации для отображения погоды.",
-          "locationWhenInUsePermission": "Разрешите доступ к геолокации для отображения погоды."
-        }
-      ]
+      "expo-router"
     ],
     "scheme": "family-os",
     "splash": {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import * as Location from 'expo-location';
 
 interface WeatherData {
   temp: number;
@@ -21,6 +20,8 @@ function weatherCodeToRu(code: number): { label: string; icon: string } {
   return { label: 'Облачно', icon: '☁️' };
 }
 
+// Uses Open-Meteo (free, no API key). Location is hardcoded until a new
+// native binary is built with expo-location included.
 export function useWeather() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -29,20 +30,9 @@ export function useWeather() {
     let cancelled = false;
 
     async function fetchWeather() {
-      let lat = 55.7558;
-      let lon = 37.6176;
-      let city = 'Москва';
-
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === 'granted') {
-          const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Low });
-          lat = loc.coords.latitude;
-          lon = loc.coords.longitude;
-          const [addr] = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
-          city = addr.city ?? addr.region ?? addr.country ?? 'Мой город';
-        }
-      } catch {}
+      const lat = 55.7558;
+      const lon = 37.6176;
+      const city = 'Москва';
 
       try {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=auto`;
