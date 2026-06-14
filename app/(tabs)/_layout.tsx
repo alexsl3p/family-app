@@ -3,6 +3,7 @@ import { Platform, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'r
 import { Tabs, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/colors';
 
@@ -60,6 +61,60 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
 
       <View style={[styles.barArea, { paddingBottom: Math.max(insets.bottom, 12) }]}>
         <View style={styles.pillShadow}>
+          {Platform.OS === 'ios' ? (
+            <BlurView intensity={55} tint="dark" style={styles.pillBlur}>
+              <View style={styles.pillHighlight} />
+              {TABS.map((tab) => {
+                if (!tab) {
+                  return (
+                    <Pressable
+                      key="fab"
+                      style={({ pressed }) => [styles.fabWrapper, pressed && styles.fabPressed]}
+                      onPress={() => setFabOpen((v) => !v)}
+                    >
+                      <LinearGradient
+                        colors={Colors.accentGradient}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style={styles.fab}
+                      >
+                        <Ionicons name={fabOpen ? 'close' : 'add'} size={30} color="#fff" />
+                      </LinearGradient>
+                    </Pressable>
+                  );
+                }
+                const isFocused = currentRoute === tab.name;
+                return (
+                  <TouchableOpacity
+                    key={tab.name}
+                    style={styles.tabItem}
+                    onPress={() => {
+                      setFabOpen(false);
+                      if (!isFocused) navigation.navigate(tab.name);
+                    }}
+                    activeOpacity={0.6}
+                  >
+                    <Ionicons
+                      name={isFocused ? tab.iconActive : tab.icon}
+                      size={24}
+                      color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
+                    />
+                    <Text
+                      style={[
+                        styles.tabLabel,
+                        {
+                          color: isFocused ? Colors.tabBarActive : Colors.tabBarInactive,
+                          fontWeight: isFocused ? '600' : '500',
+                        },
+                      ]}
+                    >
+                      {tab.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </BlurView>
+          ) : (
           <View style={styles.pill}>
             <View style={styles.pillHighlight} />
             {TABS.map((tab) => {
@@ -112,6 +167,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
               );
             })}
           </View>
+          )}
         </View>
       </View>
     </>
@@ -150,6 +206,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     backgroundColor: Colors.tabBar,
+    borderWidth: 1,
+    borderColor: Colors.tabBarBorder,
+    overflow: 'hidden',
+  },
+  pillBlur: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 34,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
     borderWidth: 1,
     borderColor: Colors.tabBarBorder,
     overflow: 'hidden',

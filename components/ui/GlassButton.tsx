@@ -95,11 +95,11 @@ const styles = StyleSheet.create({
   shadow: {
     borderRadius: Radius.full,
     overflow: 'hidden',
-    shadowColor: '#000',
+    shadowColor: Colors.accent,
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.50,
-    shadowRadius: 14,
-    elevation: 6,
+    shadowOpacity: 0.55,
+    shadowRadius: 18,
+    elevation: 8,
   },
   ghost: {
     backgroundColor: 'rgba(255, 255, 255, 0.07)',

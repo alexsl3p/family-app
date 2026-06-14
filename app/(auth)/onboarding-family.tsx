@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlassButton } from '@/components/ui/GlassButton';
@@ -27,13 +27,13 @@ export default function OnboardingFamilyScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={[Colors.bgGradientStart, Colors.bgGradientMid, Colors.bgGradientEnd]}
-      start={{ x: 0.2, y: 0 }}
-      end={{ x: 0.8, y: 1 }}
-      style={styles.container}
-    >
-      <View style={[styles.orb, styles.orbTop]} />
+    <ImageBackground source={require('@/assets/bg.jpg')} style={styles.container} resizeMode="cover">
+      <LinearGradient
+        colors={['rgba(8,18,48,0.10)', 'rgba(8,18,48,0.60)', 'rgba(8,18,48,0.90)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <SafeAreaView style={styles.safeArea}>
         {/* Back button */}
         <TouchableOpacity
@@ -99,14 +99,12 @@ export default function OnboardingFamilyScreen() {
           )}
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </LinearGradient>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  orb: { position: 'absolute', borderRadius: 9999 },
-  orbTop: { width: 350, height: 350, top: -100, left: -100, backgroundColor: Colors.orbBlue },
   safeArea: { flex: 1 },
   backBtn: {
     width: 44,

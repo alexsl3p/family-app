@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { GlassCard } from '@/components/ui/GlassCard';
 import { GlassButton } from '@/components/ui/GlassButton';
@@ -25,14 +26,13 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={[Colors.bgGradientStart, Colors.bgGradientMid, Colors.bgGradientEnd]}
-      start={{ x: 0.2, y: 0 }}
-      end={{ x: 0.8, y: 1 }}
-      style={styles.container}
-    >
-      <View style={[styles.orb, styles.orbTop]} />
-      <View style={[styles.orb, styles.orbBottom]} />
+    <ImageBackground source={require('@/assets/bg.jpg')} style={styles.container} resizeMode="cover">
+      <LinearGradient
+        colors={['rgba(8,18,48,0.10)', 'rgba(8,18,48,0.60)', 'rgba(8,18,48,0.88)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={StyleSheet.absoluteFill}
+      />
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.content}>
           <View style={styles.logoSection}>
@@ -69,15 +69,12 @@ export default function WelcomeScreen() {
           </View>
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  orb: { position: 'absolute', borderRadius: 9999 },
-  orbTop: { width: 320, height: 320, top: -100, right: -80, backgroundColor: Colors.orbBlue },
-  orbBottom: { width: 280, height: 280, bottom: -60, left: -80, backgroundColor: Colors.orbViolet },
   safeArea: { flex: 1 },
   content: { flex: 1, padding: Spacing.screenPadding, justifyContent: 'space-between', paddingVertical: 40 },
   logoSection: { alignItems: 'center', marginTop: 20 },
