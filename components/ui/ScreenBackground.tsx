@@ -11,9 +11,9 @@ export function ScreenBackground({ children }: { children: React.ReactNode }) {
       style={styles.container}
       resizeMode="cover"
     >
-      {/* Тёмный оверлей снизу — чтобы текст и карточки читались */}
+      {/* Фон уже тёмный — лёгкий оверлей только для контраста текста сверху/снизу */}
       <LinearGradient
-        colors={['rgba(8,18,48,0.10)', 'rgba(8,18,48,0.55)', 'rgba(8,18,48,0.82)']}
+        colors={['rgba(10,4,2,0.30)', 'rgba(10,4,2,0.05)', 'rgba(10,4,2,0.45)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}

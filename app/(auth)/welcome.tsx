@@ -28,7 +28,7 @@ export default function WelcomeScreen() {
   return (
     <ImageBackground source={require('@/assets/bg.jpg')} style={styles.container} resizeMode="cover">
       <LinearGradient
-        colors={['rgba(8,18,48,0.10)', 'rgba(8,18,48,0.60)', 'rgba(8,18,48,0.88)']}
+        colors={['rgba(10,4,2,0.35)', 'rgba(10,4,2,0.10)', 'rgba(10,4,2,0.55)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}

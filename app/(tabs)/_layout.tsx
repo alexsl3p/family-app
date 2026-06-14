@@ -62,7 +62,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
       <View style={[styles.barArea, { paddingBottom: Math.max(insets.bottom, 12) }]}>
         <View style={styles.pillShadow}>
           {Platform.OS === 'ios' ? (
-            <BlurView intensity={55} tint="dark" style={styles.pillBlur}>
+            <BlurView intensity={40} tint="dark" style={styles.pillBlur}>
               <View style={styles.pillHighlight} />
               {TABS.map((tab) => {
                 if (!tab) {
@@ -116,7 +116,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
             </BlurView>
           ) : (
           <LinearGradient
-            colors={['rgba(50, 18, 5, 0.94)', 'rgba(28, 10, 2, 0.97)']}
+            colors={['rgba(40, 16, 6, 0.45)', 'rgba(20, 8, 3, 0.55)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={styles.pill}

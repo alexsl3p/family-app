@@ -17,7 +17,7 @@ export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
   if (Platform.OS === 'ios') {
     return (
       <View style={[styles.iosShadow, style]}>
-        <BlurView intensity={52} tint="light" style={styles.blur}>
+        <BlurView intensity={38} tint="light" style={styles.blur}>
           <View style={styles.warmTint} />
           <View style={styles.highlight} />
           <View style={{ padding }}>{children}</View>
@@ -89,10 +89,10 @@ const styles = StyleSheet.create({
     borderRadius: Radius.xxl,
     padding: 1.5,
   },
-  // Тёмное тёплое стекло внутри
+  // Тёмное тёплое стекло внутри — прозрачнее, чтобы фон просвечивал
   androidInner: {
     borderRadius: Radius.xxl - 1,
-    backgroundColor: 'rgba(18, 8, 3, 0.68)',
+    backgroundColor: 'rgba(20, 10, 6, 0.42)',
     overflow: 'hidden',
   },
 });
