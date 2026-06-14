@@ -180,24 +180,35 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  // Stitch nav: bg-black/40 backdrop-blur-xl border-t border-white/10 rounded-t-xl
   barArea: {
-    paddingHorizontal: 16,
-    paddingTop: 6,
+    paddingHorizontal: 0,
+    paddingTop: 0,
     backgroundColor: 'transparent',
   },
   navShadow: {},
-  navBarBlur: {},
-  // Тёмный pill — надёжно на любом фоне
+  navBarBlur: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.10)',
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    overflow: 'hidden',
+  },
   navBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
-    borderRadius: 36,
-    paddingVertical: 8,
+    justifyContent: 'space-around',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     paddingHorizontal: 8,
-    backgroundColor: 'rgba(12, 8, 5, 0.82)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.10)',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255,255,255,0.10)',
+    backgroundColor: 'rgba(0,0,0,0.50)',
     overflow: 'hidden',
   },
   topHighlight: {},
