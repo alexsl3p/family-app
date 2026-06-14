@@ -8,6 +8,7 @@ class ScreenBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      fit: StackFit.expand,
       children: [
         // Base background
         Container(color: AppColors.bg),

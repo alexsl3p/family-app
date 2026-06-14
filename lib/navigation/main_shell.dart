@@ -45,6 +45,7 @@ class _MainShellState extends State<MainShell> {
       backgroundColor: AppColors.bg,
       extendBody: true,
       body: Stack(
+        fit: StackFit.expand,
         children: [
           widget.child,
           // FAB overlay
@@ -176,10 +177,10 @@ class _MainShellState extends State<MainShell> {
         child: Center(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               color: isActive ? AppColors.tabBarActiveContainer : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
