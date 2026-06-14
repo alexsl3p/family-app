@@ -141,29 +141,13 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
       )}
 
       <View style={[styles.barArea, { paddingBottom: Math.max(insets.bottom, 12) }]}>
-        {/* Тень — box-shadow: 0 8px 32px 0 #0d2626 */}
-        <View style={styles.navShadow}>
-          {Platform.OS === 'ios' ? (
-            // iOS: настоящий backdrop-filter: blur(8px)
-            <BlurView intensity={24} tint="light" style={styles.navBarBlur}>
-              <NavBarContent
-                fabOpen={fabOpen}
-                setFabOpen={setFabOpen}
-                currentRoute={currentRoute}
-                navigation={navigation}
-              />
-            </BlurView>
-          ) : (
-            // Android: rgba(255,255,255,0.15) как в оригинале
-            <View style={styles.navBar}>
-              <NavBarContent
-                fabOpen={fabOpen}
-                setFabOpen={setFabOpen}
-                currentRoute={currentRoute}
-                navigation={navigation}
-              />
-            </View>
-          )}
+        <View style={styles.navBar}>
+          <NavBarContent
+            fabOpen={fabOpen}
+            setFabOpen={setFabOpen}
+            currentRoute={currentRoute}
+            navigation={navigation}
+          />
         </View>
       </View>
     </>
@@ -182,88 +166,65 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  // Нет фона, нет контейнера — иконки плавают прямо на фоне
   barArea: {
-    paddingHorizontal: 16,
-    paddingTop: 6,
+    paddingHorizontal: 8,
+    paddingTop: 4,
     backgroundColor: 'transparent',
   },
-  // box-shadow: 0 8px 32px 0 #0d2626 (из оригинала)
-  navShadow: {
-    borderRadius: 999,
-    shadowColor: '#0d2626',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 32,
-    elevation: 14,
-  },
-  // .nav-bar из оригинала — iOS (BlurView)
+  navShadow: {},
+  // iOS BlurView — прозрачный, без фона
   navBarBlur: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
-    backgroundColor: 'rgba(255, 255, 255, 0.10)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
-    overflow: 'hidden',
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+    backgroundColor: 'transparent',
+    overflow: 'visible',
   },
-  // .nav-bar из оригинала — Android
+  // Android — тоже прозрачный
   navBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    borderRadius: 999,
-    paddingVertical: 6,
-    paddingHorizontal: 6,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
-    overflow: 'hidden',
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+    backgroundColor: 'transparent',
+    overflow: 'visible',
   },
-  // Световой блик на верхнем крае (из оригинала)
-  topHighlight: {
-    position: 'absolute',
-    top: 0,
-    left: 24,
-    right: 24,
-    height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.45)',
-  },
-  // .nav-icons из оригинала: 25% width, padding 6, border-radius полный
+  topHighlight: {},
+  // Таб-иконка — чистая, без фона
   navIcon: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 6,
     paddingHorizontal: 4,
-    borderRadius: 999,
-    gap: 2,
+    borderRadius: 16,
+    gap: 3,
   },
-  // .nav-icons:hover из оригинала — rgba(255,255,255,0.15)
+  // Активный — едва заметный полупрозрачный фон
   navIconActive: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.10)',
   },
-  // .nav-icons:hover svg — translateY(-2px) из оригинала
   iconFloat: {
     transform: [{ translateY: -1 }],
   },
   tabLabel: {
-    fontSize: 9,
-    color: 'rgba(255,255,255,0.55)',
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.45)',
     letterSpacing: 0,
   },
   tabLabelActive: {
     color: '#ffffff',
     fontWeight: '600',
   },
-  // Центральная FAB — вынесена вверх как в оригинале
   fabWrapper: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -28,
+    marginTop: -18,
   },
   fabPressed: { transform: [{ scale: 0.92 }] },
   fab: {
