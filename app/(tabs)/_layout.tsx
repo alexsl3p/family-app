@@ -116,7 +116,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
             </BlurView>
           ) : (
           <LinearGradient
-            colors={['rgba(40, 16, 6, 0.45)', 'rgba(20, 8, 3, 0.55)']}
+            colors={['rgba(70, 70, 80, 0.40)', 'rgba(30, 30, 38, 0.52)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={styles.pill}
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255, 140, 60, 0.35)',
+    borderColor: 'rgba(255, 255, 255, 0.18)',
     overflow: 'hidden',
   },
   pillBlur: {
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255, 180, 100, 0.30)',
+    borderColor: 'rgba(255, 255, 255, 0.20)',
     overflow: 'hidden',
   },
   pillHighlight: {
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     height: 1,
-    backgroundColor: 'rgba(255, 180, 80, 0.45)',
+    backgroundColor: 'rgba(255, 255, 255, 0.40)',
   },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 3, paddingVertical: 2 },
   tabLabel: { fontSize: 10, letterSpacing: -0.1 },

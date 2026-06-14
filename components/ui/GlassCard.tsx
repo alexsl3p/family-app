@@ -10,15 +10,14 @@ interface GlassCardProps {
   padding?: number;
 }
 
-// iOS: настоящий BlurView (frosted glass) поверх закатной фотографии
-// Android: gradient-border техника — LinearGradient в 1px выглядит как переливающийся ободок,
-//          тёмное тёплое стекло внутри. Без elevation (на Android transparent + elevation = белые артефакты).
+// Нейтральное матовое стекло (canonical glassmorphism):
+// iOS — BlurView tint light, фон просвечивает
+// Android — серый полупрозрачный фон + светлая gradient-рамка (без elevation, чтобы не было артефактов)
 export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
   if (Platform.OS === 'ios') {
     return (
       <View style={[styles.iosShadow, style]}>
-        <BlurView intensity={38} tint="light" style={styles.blur}>
-          <View style={styles.warmTint} />
+        <BlurView intensity={34} tint="light" style={styles.blur}>
           <View style={styles.highlight} />
           <View style={{ padding }}>{children}</View>
         </BlurView>
@@ -26,21 +25,21 @@ export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
     );
   }
 
-  // Android: gradient border = LinearGradient с padding 1.5px создаёт ободок-радугу
+  // Android: светло-серая gradient-рамка (1.5px) + прозрачное серое стекло внутри
   return (
     <View style={[styles.androidOuter, style]}>
       <LinearGradient
         colors={[
-          'rgba(255, 160, 80, 0.60)',
-          'rgba(255, 240, 210, 0.22)',
-          'rgba(200, 70, 20, 0.55)',
+          'rgba(255, 255, 255, 0.28)',
+          'rgba(255, 255, 255, 0.08)',
+          'rgba(255, 255, 255, 0.16)',
         ]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.gradientBorder}
       >
         <View style={[styles.androidInner, { padding }]}>
-          <View style={styles.warmTint} />
+          <View style={styles.highlight} />
           {children}
         </View>
       </LinearGradient>
@@ -49,50 +48,41 @@ export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
 }
 
 const styles = StyleSheet.create({
-  // iOS shadow wrapper — overflow:hidden здесь обрезает blur, не shadow
   iosShadow: {
     borderRadius: Radius.xxl,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.38,
+    shadowOpacity: 0.30,
     shadowRadius: 20,
     overflow: 'hidden',
   },
   blur: {
     borderRadius: Radius.xxl,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.35)',
+    borderColor: 'rgba(255, 255, 255, 0.28)',
     overflow: 'hidden',
   },
-  // Тёплый тинт — закат слегка просвечивает сквозь стекло
-  warmTint: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(255, 110, 40, 0.06)',
-  },
-  // Световой блик — только iOS (с blur выглядит как преломление)
+  // Световой блик на верхнем крае — преломление света на стекле
   highlight: {
     position: 'absolute',
     top: 0,
     left: 14,
     right: 14,
-    height: 1.5,
-    backgroundColor: 'rgba(255, 255, 255, 0.60)',
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.45)',
     borderRadius: 1,
   },
-  // Android: обёртка без elevation (избегаем белых артефактов Android)
   androidOuter: {
     borderRadius: Radius.xxl,
   },
-  // LinearGradient служит "рамкой" толщиной 1.5px с градиентом заката
   gradientBorder: {
     borderRadius: Radius.xxl,
     padding: 1.5,
   },
-  // Тёмное тёплое стекло внутри — прозрачнее, чтобы фон просвечивал
+  // Серое прозрачное стекло — фон просвечивает сильнее
   androidInner: {
     borderRadius: Radius.xxl - 1,
-    backgroundColor: 'rgba(20, 10, 6, 0.42)',
+    backgroundColor: 'rgba(60, 60, 68, 0.28)',
     overflow: 'hidden',
   },
 });
