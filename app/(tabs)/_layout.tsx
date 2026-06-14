@@ -49,7 +49,7 @@ function TabItem({
       <Ionicons
         name={isFocused ? tab.iconActive : tab.icon}
         size={22}
-        color={isFocused ? '#ffffff' : 'rgba(255,255,255,0.55)'}
+        color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
         style={isFocused ? styles.iconFloat : undefined}
       />
       <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
@@ -207,8 +207,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     paddingHorizontal: 8,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.10)',
-    backgroundColor: 'rgba(0,0,0,0.50)',
+    borderTopColor: Colors.tabBarBorder,
+    backgroundColor: Colors.tabBar,
     overflow: 'hidden',
   },
   topHighlight: {},
@@ -222,18 +222,21 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     gap: 3,
   },
-  // Активный — только цвет иконки меняется, без фона
-  navIconActive: {},
+  // Активный — синяя pill-подсветка под иконкой
+  navIconActive: {
+    backgroundColor: 'rgba(74,144,255,0.18)',
+    borderRadius: 14,
+  },
   iconFloat: {
     transform: [{ translateY: -1 }],
   },
   tabLabel: {
     fontSize: 10,
-    color: 'rgba(255,255,255,0.45)',
+    color: Colors.tabBarInactive,
     letterSpacing: 0,
   },
   tabLabelActive: {
-    color: '#ffffff',
+    color: Colors.tabBarActive,
     fontWeight: '600',
   },
   fabWrapper: {
@@ -264,18 +267,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     zIndex: 10,
   },
-  // FAB меню — как .music из оригинала: rgba(149,0,255,0.25) но у нас тёмное для читаемости
+  // FAB меню — Stitch dark surface
   fabMenu: {
     marginHorizontal: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: Colors.surface2,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: Colors.glassBorder,
     padding: 6,
-    shadowColor: '#0d2626',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 32,
+    shadowOpacity: 0.6,
+    shadowRadius: 24,
     elevation: 14,
   },
   fabMenuItem: { flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12 },

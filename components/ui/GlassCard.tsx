@@ -1,6 +1,6 @@
 import React from 'react';
-import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { StyleSheet, View, ViewStyle } from 'react-native';
+import { Colors } from '@/constants/colors';
 import { Radius } from '@/constants/radius';
 
 interface GlassCardProps {
@@ -9,25 +9,12 @@ interface GlassCardProps {
   padding?: number;
 }
 
-// Точный стиль из uiverse.io/narmesh_sah/purple-quail-14:
-// background: rgba(255,255,255,0.15)  blur(8px)  border: rgba(255,255,255,0.18)
-// box-shadow: 0 8px 32px 0 #0d2626
+// Stitch dark card — no blur, no white glass
+// background: #111927  border: rgba(255,255,255,0.08)  shadow: dark
 export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
-  if (Platform.OS === 'ios') {
-    return (
-      <View style={[styles.shadow, style]}>
-        <BlurView intensity={28} tint="light" style={styles.blur}>
-          <View style={styles.highlight} />
-          <View style={{ padding }}>{children}</View>
-        </BlurView>
-      </View>
-    );
-  }
-
   return (
     <View style={[styles.shadow, style]}>
       <View style={[styles.card, { padding }]}>
-        <View style={styles.highlight} />
         {children}
       </View>
     </View>
@@ -37,35 +24,17 @@ export function GlassCard({ children, style, padding = 16 }: GlassCardProps) {
 const styles = StyleSheet.create({
   shadow: {
     borderRadius: Radius.xxl,
-    // box-shadow: 0 8px 32px 0 #0d2626  (из оригинала)
-    shadowColor: '#0d2626',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 1,
-    shadowRadius: 32,
-    elevation: 8,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 6,
   },
-  blur: {
-    borderRadius: Radius.xxl,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
-    overflow: 'hidden',
-  },
-  // Android: rgba(255,255,255,0.15) как в оригинале
   card: {
     borderRadius: Radius.xxl,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: Colors.glassBorder,
     overflow: 'hidden',
-  },
-  // Тонкий световой блик сверху — классика glassmorphism
-  highlight: {
-    position: 'absolute',
-    top: 0,
-    left: 14,
-    right: 14,
-    height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.40)',
   },
 });

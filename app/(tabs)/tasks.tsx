@@ -32,7 +32,7 @@ const MOCK_TASKS = [
 ];
 
 const ASSIGNEE_COLORS: Record<string, string> = {
-  'Мама': '#FF7849',
+  'Мама': '#4A90FF',
   'Папа': '#60A5FA',
 };
 
@@ -220,10 +220,10 @@ const styles = StyleSheet.create({
   // Priority pill
   priorityPill: {
     flexDirection: 'row', alignItems: 'center', gap: 4,
-    backgroundColor: 'rgba(255,120,73,0.15)',
+    backgroundColor: Colors.accentLight,
     paddingHorizontal: 8, paddingVertical: 3,
     borderRadius: 99,
-    borderWidth: 1, borderColor: 'rgba(255,120,73,0.30)',
+    borderWidth: 1, borderColor: 'rgba(74,144,255,0.30)',
   },
   priorityPillText: { fontSize: 11, fontWeight: '600', color: Colors.accent },
 });

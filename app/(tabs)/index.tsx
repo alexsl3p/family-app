@@ -28,9 +28,9 @@ const MOCK_TASKS = [
 const MOCK_SHOPPING = ['Молоко 2л', 'Хлеб', 'Яблоки 1кг', 'Сыр'];
 
 const MOCK_MEMBERS = [
-  { id: '1', name: 'Мама', color: '#FF7849', defaultStatus: 'Дома' },
+  { id: '1', name: 'Мама', color: '#4A90FF', defaultStatus: 'Дома' },
   { id: '2', name: 'Папа', color: '#60A5FA', defaultStatus: 'Дома' },
-  { id: '3', name: 'Лёня', color: '#4ADE80', defaultStatus: 'Дома' },
+  { id: '3', name: 'Лёня', color: '#34D399', defaultStatus: 'Дома' },
 ];
 
 function MemberStatus({ member }: { member: typeof MOCK_MEMBERS[number] }) {
@@ -198,10 +198,10 @@ const styles = StyleSheet.create({
   priorityHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   priorityBadge: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
-    backgroundColor: 'rgba(255,120,73,0.15)',
+    backgroundColor: Colors.accentLight,
     paddingHorizontal: 10, paddingVertical: 4,
     borderRadius: 99,
-    borderWidth: 1, borderColor: 'rgba(255,120,73,0.30)',
+    borderWidth: 1, borderColor: 'rgba(74,144,255,0.30)',
   },
   priorityLabel: { fontSize: 11, fontWeight: '700', color: Colors.accent, letterSpacing: 0.8 },
   dueBadge: {

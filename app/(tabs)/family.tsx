@@ -14,9 +14,9 @@ import { Spacing } from '@/constants/spacing';
 import { Radius } from '@/constants/radius';
 
 const MOCK_MEMBERS = [
-  { id: '1', name: 'Мама',   color: '#FF7849', isCreator: true  },
+  { id: '1', name: 'Мама',   color: '#4A90FF', isCreator: true  },
   { id: '2', name: 'Папа',   color: '#60A5FA', isCreator: false },
-  { id: '3', name: 'Лёня',   color: '#4ADE80', isCreator: false },
+  { id: '3', name: 'Лёня',   color: '#34D399', isCreator: false },
   { id: '4', name: 'Маша',   color: '#C084FC', isCreator: false },
 ];
 
