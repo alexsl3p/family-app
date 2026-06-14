@@ -28,43 +28,38 @@ interface TabBarProps {
   navigation: { navigate: (name: string) => void };
 }
 
+// Стиль взят точно из uiverse.io/narmesh_sah/purple-quail-14:
+// .nav-bar:  rgba(255,255,255,0.15)  blur(8px)  border rgba(255,255,255,0.18)  shadow #0d2626
+// .nav-icons active: rgba(255,255,255,0.15) bg + translateY(-2px)
 function TabItem({
   tab,
   isFocused,
   onPress,
 }: {
-  tab: { name: string; icon: IconName; iconActive: IconName; label: string };
+  tab: { icon: IconName; iconActive: IconName; label: string };
   isFocused: boolean;
   onPress: () => void;
 }) {
   return (
-    <TouchableOpacity style={styles.tabItem} onPress={onPress} activeOpacity={0.7}>
-      <View style={styles.tabIconWrapper}>
-        {/* Glow blob за активным иконкой — ключевой эффект uiverse glassmorphism */}
-        {isFocused && <View style={styles.activeGlow} />}
-        <Ionicons
-          name={isFocused ? tab.iconActive : tab.icon}
-          size={22}
-          color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
-          style={isFocused ? styles.activeIcon : undefined}
-        />
-      </View>
-      <Text
-        style={[
-          styles.tabLabel,
-          { color: isFocused ? Colors.tabBarActive : Colors.tabBarInactive },
-          isFocused && styles.tabLabelActive,
-        ]}
-      >
+    <TouchableOpacity
+      style={[styles.navIcon, isFocused && styles.navIconActive]}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <Ionicons
+        name={isFocused ? tab.iconActive : tab.icon}
+        size={22}
+        color={isFocused ? '#ffffff' : 'rgba(255,255,255,0.55)'}
+        style={isFocused ? styles.iconFloat : undefined}
+      />
+      <Text style={[styles.tabLabel, isFocused && styles.tabLabelActive]}>
         {tab.label}
       </Text>
-      {/* Маленькая точка-индикатор под активным табом */}
-      {isFocused && <View style={styles.activeDot} />}
     </TouchableOpacity>
   );
 }
 
-function TabsRow({
+function NavBarContent({
   fabOpen,
   setFabOpen,
   currentRoute,
@@ -77,7 +72,8 @@ function TabsRow({
 }) {
   return (
     <>
-      <View style={styles.pillHighlight} />
+      {/* Световой блик сверху (из оригинала) */}
+      <View style={styles.topHighlight} />
       {TABS.map((tab) => {
         if (!tab) {
           return (
@@ -92,20 +88,19 @@ function TabsRow({
                 end={{ x: 1, y: 1 }}
                 style={styles.fab}
               >
-                <Ionicons name={fabOpen ? 'close' : 'add'} size={28} color="#fff" />
+                <Ionicons name={fabOpen ? 'close' : 'add'} size={26} color="#fff" />
               </LinearGradient>
             </Pressable>
           );
         }
-        const isFocused = currentRoute === tab.name;
         return (
           <TabItem
             key={tab.name}
             tab={tab}
-            isFocused={isFocused}
+            isFocused={currentRoute === tab.name}
             onPress={() => {
               setFabOpen(false);
-              if (!isFocused) navigation.navigate(tab.name);
+              if (currentRoute !== tab.name) navigation.navigate(tab.name);
             }}
           />
         );
@@ -123,6 +118,7 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
     <>
       {fabOpen && (
         <Pressable style={styles.fabOverlay} onPress={() => setFabOpen(false)}>
+          {/* FAB меню — тёмное стекло для контраста (как .music у оригинала) */}
           <View style={[styles.fabMenu, { marginBottom: 110 + insets.bottom }]}>
             {FAB_ACTIONS.map((action, idx) => (
               <TouchableOpacity
@@ -145,10 +141,12 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
       )}
 
       <View style={[styles.barArea, { paddingBottom: Math.max(insets.bottom, 12) }]}>
-        <View style={styles.pillShadow}>
+        {/* Тень — box-shadow: 0 8px 32px 0 #0d2626 */}
+        <View style={styles.navShadow}>
           {Platform.OS === 'ios' ? (
-            <BlurView intensity={38} tint="dark" style={styles.pillBlur}>
-              <TabsRow
+            // iOS: настоящий backdrop-filter: blur(8px)
+            <BlurView intensity={24} tint="light" style={styles.navBarBlur}>
+              <NavBarContent
                 fabOpen={fabOpen}
                 setFabOpen={setFabOpen}
                 currentRoute={currentRoute}
@@ -156,8 +154,9 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
               />
             </BlurView>
           ) : (
-            <View style={styles.pill}>
-              <TabsRow
+            // Android: rgba(255,255,255,0.15) как в оригинале
+            <View style={styles.navBar}>
+              <NavBarContent
                 fabOpen={fabOpen}
                 setFabOpen={setFabOpen}
                 currentRoute={currentRoute}
@@ -184,141 +183,126 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   barArea: {
-    paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingHorizontal: 16,
+    paddingTop: 6,
     backgroundColor: 'transparent',
   },
-  pillShadow: {
-    borderRadius: 36,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.55,
+  // box-shadow: 0 8px 32px 0 #0d2626 (из оригинала)
+  navShadow: {
+    borderRadius: 999,
+    shadowColor: '#0d2626',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 1,
     shadowRadius: 32,
-    elevation: 16,
+    elevation: 14,
   },
-  // iOS: BlurView (настоящий frosted glass)
-  pillBlur: {
+  // .nav-bar из оригинала — iOS (BlurView)
+  navBarBlur: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 36,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
+    justifyContent: 'space-evenly',
+    borderRadius: 999,
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.10)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.18)',
     overflow: 'hidden',
   },
-  // Android: полупрозрачное серое стекло
-  pill: {
+  // .nav-bar из оригинала — Android
+  navBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 36,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    backgroundColor: 'rgba(30, 28, 36, 0.52)',
+    justifyContent: 'space-evenly',
+    borderRadius: 999,
+    paddingVertical: 6,
+    paddingHorizontal: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.18)',
     overflow: 'hidden',
   },
-  // Верхний световой блик — тонкая линия преломления (стиль uiverse)
-  pillHighlight: {
+  // Световой блик на верхнем крае (из оригинала)
+  topHighlight: {
     position: 'absolute',
     top: 0,
-    left: 30,
-    right: 30,
+    left: 24,
+    right: 24,
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.35)',
+    backgroundColor: 'rgba(255, 255, 255, 0.45)',
   },
-  // Таб-элемент
-  tabItem: {
+  // .nav-icons из оригинала: 25% width, padding 6, border-radius полный
+  navIcon: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    borderRadius: 999,
     gap: 2,
   },
-  tabIconWrapper: {
-    width: 40,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
+  // .nav-icons:hover из оригинала — rgba(255,255,255,0.15)
+  navIconActive: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
   },
-  // Glow blob за иконкой — главный эффект uiverse glassmorphism navigation
-  // iOS: shadowRadius создаёт настоящее свечение
-  // Android: полупрозрачный кружок имитирует glow
-  activeGlow: {
-    position: 'absolute',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.accent,
-    opacity: Platform.OS === 'ios' ? 0.22 : 0.18,
-    shadowColor: Colors.accent,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 18,
-  },
-  activeIcon: {
+  // .nav-icons:hover svg — translateY(-2px) из оригинала
+  iconFloat: {
     transform: [{ translateY: -1 }],
   },
-  tabLabel: { fontSize: 10, letterSpacing: -0.1 },
-  tabLabelActive: { fontWeight: '600' },
-  // Маленькая точка под активным табом
-  activeDot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: Colors.tabBarActive,
-    shadowColor: Colors.tabBarActive,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 4,
+  tabLabel: {
+    fontSize: 9,
+    color: 'rgba(255,255,255,0.55)',
+    letterSpacing: 0,
   },
+  tabLabelActive: {
+    color: '#ffffff',
+    fontWeight: '600',
+  },
+  // Центральная FAB — вынесена вверх как в оригинале
   fabWrapper: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -30,
+    marginTop: -28,
   },
-  fabPressed: { transform: [{ scale: 0.93 }] },
+  fabPressed: { transform: [{ scale: 0.92 }] },
   fab: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: Colors.accent,
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.55,
-    shadowRadius: 18,
+    shadowRadius: 16,
     elevation: 10,
-    borderWidth: 2.5,
-    borderColor: 'rgba(255, 255, 255, 0.90)',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.85)',
   },
   fabOverlay: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(8, 5, 15, 0.60)',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(5, 3, 10, 0.65)',
     justifyContent: 'flex-end',
     zIndex: 10,
   },
+  // FAB меню — как .music из оригинала: rgba(149,0,255,0.25) но у нас тёмное для читаемости
   fabMenu: {
     marginHorizontal: 20,
-    backgroundColor: 'rgba(22, 18, 30, 0.96)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.18)',
     padding: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.70,
+    shadowColor: '#0d2626',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 1,
     shadowRadius: 32,
     elevation: 14,
   },
   fabMenuItem: { flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12 },
-  fabMenuDivider: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.07)' },
+  fabMenuDivider: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.10)' },
   fabMenuIcon: {
     width: 40,
     height: 40,
