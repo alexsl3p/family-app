@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ScreenBackground } from '@/components/ui/ScreenBackground';
@@ -33,16 +34,22 @@ const MOCK_MEMBERS = [
   { id: '3', name: 'Лёня', color: '#34D399', defaultStatus: 'Дома' },
 ];
 
+function getStatusColor(status: string): string {
+  if (status === 'На работе') return Colors.info;      // tertiary = #7bd0ff
+  if (status === 'В школе') return Colors.pink;        // secondary = #ffafd3
+  if (status === 'Дома') return Colors.textMuted;
+  return Colors.accent;                                  // primary = #d2bbff
+}
+
 function MemberStatus({ member }: { member: typeof MOCK_MEMBERS[number] }) {
   const schedules = useScheduleStore((s) => s.schedules);
   const slots = schedules[member.id] ?? [];
   const status = getCurrentStatus(slots) ?? member.defaultStatus;
-  const isActive = status !== 'Дома';
   return (
     <View style={styles.memberItem}>
       <AvatarBubble name={member.name} color={member.color} size={44} />
       <Text style={styles.memberName}>{member.name}</Text>
-      <Text style={[styles.memberStatus, isActive && { color: Colors.success }]}>{status}</Text>
+      <Text style={[styles.memberStatus, { color: getStatusColor(status) }]}>{status}</Text>
     </View>
   );
 }
@@ -87,11 +94,17 @@ export default function HomeScreen() {
             <Text style={styles.priorityTitle}>{MOCK_PRIORITY_TASK.title}</Text>
             <Text style={styles.priorityDesc}>{MOCK_PRIORITY_TASK.description}</Text>
             <TouchableOpacity
-              style={styles.completeBtn}
               activeOpacity={0.8}
               onPress={() => router.push(`/task/${MOCK_PRIORITY_TASK.id}` as never)}
             >
-              <Text style={styles.completeBtnText}>Выполнено</Text>
+              <LinearGradient
+                colors={Colors.accentGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.completeBtn}
+              >
+                <Text style={styles.completeBtnText}>Выполнено</Text>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
         </GlassCard>
@@ -201,25 +214,24 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.pinkLight,
     paddingHorizontal: 10, paddingVertical: 4,
     borderRadius: 99,
-    borderWidth: 1, borderColor: 'rgba(236,72,153,0.35)',
+    borderWidth: 1, borderColor: 'rgba(255,175,211,0.30)',
   },
   priorityLabel: { fontSize: 11, fontWeight: '700', color: Colors.pink, letterSpacing: 0.8 },
   dueBadge: {
     backgroundColor: Colors.pinkLight,
     paddingHorizontal: 10, paddingVertical: 4,
     borderRadius: 99,
-    borderWidth: 1, borderColor: 'rgba(236,72,153,0.35)',
+    borderWidth: 1, borderColor: 'rgba(255,175,211,0.30)',
   },
   dueText: { fontSize: 11, color: Colors.pink, fontWeight: '600' },
   priorityTitle: { fontSize: 18, fontWeight: '700', color: Colors.textPrimary, marginBottom: 6 },
   priorityDesc: { fontSize: 13, color: Colors.textSecondary, lineHeight: 19, marginBottom: 14 },
   completeBtn: {
     alignSelf: 'flex-start',
-    backgroundColor: Colors.pink,
     paddingHorizontal: 20, paddingVertical: 9,
     borderRadius: 99,
   },
-  completeBtnText: { fontSize: 14, fontWeight: '600', color: '#fff' },
+  completeBtnText: { fontSize: 14, fontWeight: '600', color: '#0b1326' },
 
   // Weather card — Stitch style
   weatherCard: { marginBottom: 20 },

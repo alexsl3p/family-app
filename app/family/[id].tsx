@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     backgroundColor: Colors.warningLight,
     borderWidth: 2,
-    borderColor: Colors.bgGradientMid,
+    borderColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
   },

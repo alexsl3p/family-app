@@ -83,7 +83,7 @@ function NavBarContent({
               onPress={() => setFabOpen(!fabOpen)}
             >
               <LinearGradient
-                colors={Colors.accentGradient}
+                colors={Colors.fabGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.fab}
@@ -210,6 +210,11 @@ const styles = StyleSheet.create({
     borderTopColor: Colors.tabBarBorder,
     backgroundColor: Colors.tabBar,
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 20,
   },
   topHighlight: {},
   // Таб-иконка — чистая, без фона
@@ -222,9 +227,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     gap: 3,
   },
-  // Активный — фиолетовая pill-подсветка под иконкой
+  // Stitch: bg-primary-container  (active pill — deep purple filled)
   navIconActive: {
-    backgroundColor: 'rgba(139,92,246,0.22)',
+    backgroundColor: Colors.tabBarActiveContainer,
     borderRadius: 14,
   },
   iconFloat: {
@@ -252,13 +257,13 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.accent,
+    shadowColor: Colors.fabShadow,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.55,
     shadowRadius: 16,
     elevation: 10,
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.85)',
+    borderColor: 'rgba(255, 255, 255, 0.25)',
   },
   fabOverlay: {
     position: 'absolute',

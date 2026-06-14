@@ -25,10 +25,10 @@ const styles = StyleSheet.create({
   shadow: {
     borderRadius: Radius.xxl,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
+    elevation: 10,
   },
   card: {
     borderRadius: Radius.xxl,

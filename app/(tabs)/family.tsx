@@ -14,13 +14,20 @@ import { Spacing } from '@/constants/spacing';
 import { Radius } from '@/constants/radius';
 
 const MOCK_MEMBERS = [
-  { id: '1', name: 'Мама',   color: '#4A90FF', isCreator: true  },
-  { id: '2', name: 'Папа',   color: '#60A5FA', isCreator: false },
+  { id: '1', name: 'Мама',   color: '#d2bbff', isCreator: true  },
+  { id: '2', name: 'Папа',   color: '#7bd0ff', isCreator: false },
   { id: '3', name: 'Лёня',   color: '#34D399', isCreator: false },
-  { id: '4', name: 'Маша',   color: '#C084FC', isCreator: false },
+  { id: '4', name: 'Маша',   color: '#ffafd3', isCreator: false },
 ];
 
 const INVITE_CODE = 'A7K9Q2PM';
+
+function getStatusColor(status: string): string {
+  if (status === 'На работе') return Colors.info;
+  if (status === 'В школе') return Colors.pink;
+  if (status === 'Дома') return Colors.textMuted;
+  return Colors.accent;
+}
 
 function MemberRow({ member }: { member: typeof MOCK_MEMBERS[number] }) {
   const schedules = useScheduleStore((s) => s.schedules);
@@ -41,8 +48,8 @@ function MemberRow({ member }: { member: typeof MOCK_MEMBERS[number] }) {
           )}
         </View>
         <View style={styles.statusRow}>
-          <View style={[styles.statusDot, { backgroundColor: isHome ? Colors.textMuted : Colors.success }]} />
-          <Text style={[styles.memberStatus, !isHome && { color: Colors.success }]}>{status}</Text>
+          <View style={[styles.statusDot, { backgroundColor: getStatusColor(status) }]} />
+          <Text style={[styles.memberStatus, { color: getStatusColor(status) }]}>{status}</Text>
         </View>
       </View>
       <TouchableOpacity
