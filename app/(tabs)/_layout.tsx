@@ -12,7 +12,7 @@ type IconName = keyof typeof Ionicons.glyphMap;
 const TABS: ({ name: string; icon: IconName; iconActive: IconName; label: string } | null)[] = [
   { name: 'index', icon: 'home-outline', iconActive: 'home', label: 'Главная' },
   { name: 'tasks', icon: 'checkmark-circle-outline', iconActive: 'checkmark-circle', label: 'Дела' },
-  null, // центральная кнопка +
+  null,
   { name: 'shopping', icon: 'cart-outline', iconActive: 'cart', label: 'Покупки' },
   { name: 'family', icon: 'people-outline', iconActive: 'people', label: 'Семья' },
 ];
@@ -23,10 +23,95 @@ const FAB_ACTIONS: { icon: IconName; label: string; route: string }[] = [
   { icon: 'list-outline', label: 'Создать список покупок', route: '/shopping/new-list' },
 ];
 
-// Минимальный тип пропсов таб-бара (не тянем @react-navigation/bottom-tabs напрямую)
 interface TabBarProps {
   state: { index: number; routes: { name: string; key: string }[] };
   navigation: { navigate: (name: string) => void };
+}
+
+function TabItem({
+  tab,
+  isFocused,
+  onPress,
+}: {
+  tab: { name: string; icon: IconName; iconActive: IconName; label: string };
+  isFocused: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <TouchableOpacity style={styles.tabItem} onPress={onPress} activeOpacity={0.7}>
+      <View style={styles.tabIconWrapper}>
+        {/* Glow blob за активным иконкой — ключевой эффект uiverse glassmorphism */}
+        {isFocused && <View style={styles.activeGlow} />}
+        <Ionicons
+          name={isFocused ? tab.iconActive : tab.icon}
+          size={22}
+          color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
+          style={isFocused ? styles.activeIcon : undefined}
+        />
+      </View>
+      <Text
+        style={[
+          styles.tabLabel,
+          { color: isFocused ? Colors.tabBarActive : Colors.tabBarInactive },
+          isFocused && styles.tabLabelActive,
+        ]}
+      >
+        {tab.label}
+      </Text>
+      {/* Маленькая точка-индикатор под активным табом */}
+      {isFocused && <View style={styles.activeDot} />}
+    </TouchableOpacity>
+  );
+}
+
+function TabsRow({
+  fabOpen,
+  setFabOpen,
+  currentRoute,
+  navigation,
+}: {
+  fabOpen: boolean;
+  setFabOpen: (v: boolean) => void;
+  currentRoute: string;
+  navigation: { navigate: (name: string) => void };
+}) {
+  return (
+    <>
+      <View style={styles.pillHighlight} />
+      {TABS.map((tab) => {
+        if (!tab) {
+          return (
+            <Pressable
+              key="fab"
+              style={({ pressed }) => [styles.fabWrapper, pressed && styles.fabPressed]}
+              onPress={() => setFabOpen(!fabOpen)}
+            >
+              <LinearGradient
+                colors={Colors.accentGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.fab}
+              >
+                <Ionicons name={fabOpen ? 'close' : 'add'} size={28} color="#fff" />
+              </LinearGradient>
+            </Pressable>
+          );
+        }
+        const isFocused = currentRoute === tab.name;
+        return (
+          <TabItem
+            key={tab.name}
+            tab={tab}
+            isFocused={isFocused}
+            onPress={() => {
+              setFabOpen(false);
+              if (!isFocused) navigation.navigate(tab.name);
+            }}
+          />
+        );
+      })}
+    </>
+  );
 }
 
 function CustomTabBar({ state, navigation }: TabBarProps) {
@@ -62,116 +147,23 @@ function CustomTabBar({ state, navigation }: TabBarProps) {
       <View style={[styles.barArea, { paddingBottom: Math.max(insets.bottom, 12) }]}>
         <View style={styles.pillShadow}>
           {Platform.OS === 'ios' ? (
-            <BlurView intensity={40} tint="dark" style={styles.pillBlur}>
-              <View style={styles.pillHighlight} />
-              {TABS.map((tab) => {
-                if (!tab) {
-                  return (
-                    <Pressable
-                      key="fab"
-                      style={({ pressed }) => [styles.fabWrapper, pressed && styles.fabPressed]}
-                      onPress={() => setFabOpen((v) => !v)}
-                    >
-                      <LinearGradient
-                        colors={Colors.accentGradient}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style={styles.fab}
-                      >
-                        <Ionicons name={fabOpen ? 'close' : 'add'} size={30} color="#fff" />
-                      </LinearGradient>
-                    </Pressable>
-                  );
-                }
-                const isFocused = currentRoute === tab.name;
-                return (
-                  <TouchableOpacity
-                    key={tab.name}
-                    style={styles.tabItem}
-                    onPress={() => {
-                      setFabOpen(false);
-                      if (!isFocused) navigation.navigate(tab.name);
-                    }}
-                    activeOpacity={0.6}
-                  >
-                    <Ionicons
-                      name={isFocused ? tab.iconActive : tab.icon}
-                      size={24}
-                      color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
-                    />
-                    <Text
-                      style={[
-                        styles.tabLabel,
-                        {
-                          color: isFocused ? Colors.tabBarActive : Colors.tabBarInactive,
-                          fontWeight: isFocused ? '600' : '500',
-                        },
-                      ]}
-                    >
-                      {tab.label}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+            <BlurView intensity={38} tint="dark" style={styles.pillBlur}>
+              <TabsRow
+                fabOpen={fabOpen}
+                setFabOpen={setFabOpen}
+                currentRoute={currentRoute}
+                navigation={navigation}
+              />
             </BlurView>
           ) : (
-          <LinearGradient
-            colors={['rgba(70, 70, 80, 0.40)', 'rgba(30, 30, 38, 0.52)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.pill}
-          >
-            <View style={styles.pillHighlight} />
-            {TABS.map((tab) => {
-              if (!tab) {
-                return (
-                  <Pressable
-                    key="fab"
-                    style={({ pressed }) => [styles.fabWrapper, pressed && styles.fabPressed]}
-                    onPress={() => setFabOpen((v) => !v)}
-                  >
-                    <LinearGradient
-                      colors={Colors.accentGradient}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 0, y: 1 }}
-                      style={styles.fab}
-                    >
-                      <Ionicons name={fabOpen ? 'close' : 'add'} size={30} color="#fff" />
-                    </LinearGradient>
-                  </Pressable>
-                );
-              }
-              const isFocused = currentRoute === tab.name;
-              return (
-                <TouchableOpacity
-                  key={tab.name}
-                  style={styles.tabItem}
-                  onPress={() => {
-                    setFabOpen(false);
-                    if (!isFocused) navigation.navigate(tab.name);
-                  }}
-                  activeOpacity={0.6}
-                >
-                  <Ionicons
-                    name={isFocused ? tab.iconActive : tab.icon}
-                    size={24}
-                    color={isFocused ? Colors.tabBarActive : Colors.tabBarInactive}
-                  />
-                  <Text
-                    style={[
-                      styles.tabLabel,
-                      {
-                        color: isFocused ? Colors.tabBarActive : Colors.tabBarInactive,
-                        fontWeight: isFocused ? '600' : '500',
-                      },
-                    ]}
-                  >
-                    {tab.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </LinearGradient>
+            <View style={styles.pill}>
+              <TabsRow
+                fabOpen={fabOpen}
+                setFabOpen={setFabOpen}
+                currentRoute={currentRoute}
+                navigation={navigation}
+              />
+            </View>
           )}
         </View>
       </View>
@@ -192,68 +184,115 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   barArea: {
-    paddingHorizontal: 16,
-    paddingTop: 6,
+    paddingHorizontal: 20,
+    paddingTop: 8,
     backgroundColor: 'transparent',
   },
   pillShadow: {
-    borderRadius: 34,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.65,
-    shadowRadius: 28,
-    elevation: 14,
+    borderRadius: 36,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.55,
+    shadowRadius: 32,
+    elevation: 16,
   },
-  pill: {
+  // iOS: BlurView (настоящий frosted glass)
+  pillBlur: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 34,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    borderRadius: 36,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.18)',
     overflow: 'hidden',
   },
-  pillBlur: {
+  // Android: полупрозрачное серое стекло
+  pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 34,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    borderRadius: 36,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    backgroundColor: 'rgba(30, 28, 36, 0.52)',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.20)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
     overflow: 'hidden',
   },
+  // Верхний световой блик — тонкая линия преломления (стиль uiverse)
   pillHighlight: {
     position: 'absolute',
     top: 0,
-    left: 20,
-    right: 20,
+    left: 30,
+    right: 30,
     height: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.40)',
+    backgroundColor: 'rgba(255, 255, 255, 0.35)',
   },
-  tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 3, paddingVertical: 2 },
+  // Таб-элемент
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+    gap: 2,
+  },
+  tabIconWrapper: {
+    width: 40,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  // Glow blob за иконкой — главный эффект uiverse glassmorphism navigation
+  // iOS: shadowRadius создаёт настоящее свечение
+  // Android: полупрозрачный кружок имитирует glow
+  activeGlow: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.accent,
+    opacity: Platform.OS === 'ios' ? 0.22 : 0.18,
+    shadowColor: Colors.accent,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 18,
+  },
+  activeIcon: {
+    transform: [{ translateY: -1 }],
+  },
   tabLabel: { fontSize: 10, letterSpacing: -0.1 },
+  tabLabelActive: { fontWeight: '600' },
+  // Маленькая точка под активным табом
+  activeDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: Colors.tabBarActive,
+    shadowColor: Colors.tabBarActive,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 4,
+  },
   fabWrapper: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: -34,
+    marginTop: -30,
   },
-  fabPressed: { transform: [{ scale: 0.94 }] },
+  fabPressed: { transform: [{ scale: 0.93 }] },
   fab: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: Colors.accent,
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.45,
-    shadowRadius: 16,
-    elevation: 8,
-    borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.95)',
+    shadowOpacity: 0.55,
+    shadowRadius: 18,
+    elevation: 10,
+    borderWidth: 2.5,
+    borderColor: 'rgba(255, 255, 255, 0.90)',
   },
   fabOverlay: {
     position: 'absolute',
@@ -261,25 +300,25 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(10, 8, 20, 0.55)',
+    backgroundColor: 'rgba(8, 5, 15, 0.60)',
     justifyContent: 'flex-end',
     zIndex: 10,
   },
   fabMenu: {
     marginHorizontal: 20,
-    backgroundColor: 'rgba(40, 35, 65, 0.97)',
+    backgroundColor: 'rgba(22, 18, 30, 0.96)',
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.10)',
+    borderColor: 'rgba(255, 255, 255, 0.12)',
     padding: 6,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.60,
-    shadowRadius: 28,
-    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 20 },
+    shadowOpacity: 0.70,
+    shadowRadius: 32,
+    elevation: 14,
   },
   fabMenuItem: { flexDirection: 'row', alignItems: 'center', padding: 14, gap: 12 },
-  fabMenuDivider: { borderBottomWidth: 1, borderBottomColor: Colors.glassDivider },
+  fabMenuDivider: { borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.07)' },
   fabMenuIcon: {
     width: 40,
     height: 40,
