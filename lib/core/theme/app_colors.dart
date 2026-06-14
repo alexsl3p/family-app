@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 class AppColors {
   // Backgrounds
   static const bg = Color(0xFF070B18);
-  static const surface = Color(0x8C12192D);      // rgba(18,25,45,0.55)
-  static const surfaceStrong = Color(0xCC12192D); // rgba(18,25,45,0.80)
-  static const surface2 = Color(0x801A213A);
+  static const surface = Color(0xFF131C30);       // surface-container-low
+  static const surfaceStrong = Color(0xFF1C2540); // surface-container — карточки
+  static const surface2 = Color(0xFF232D4A);      // surface-container-high
 
   // Borders
   static const glassBorder = Color(0x14FFFFFF);   // rgba(255,255,255,0.08)

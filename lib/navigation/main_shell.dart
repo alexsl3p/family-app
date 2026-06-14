@@ -133,7 +133,6 @@ class _MainShellState extends State<MainShell> {
             border: Border(top: BorderSide(color: AppColors.tabBarBorder)),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ...[0, 1].map((i) => _buildTabItem(context, _tabs[i], i == currentIdx)),
               // FAB
@@ -171,33 +170,37 @@ class _MainShellState extends State<MainShell> {
   }
 
   Widget _buildTabItem(BuildContext context, _Tab tab, bool isActive) {
-    return GestureDetector(
-      onTap: () => context.go(tab.path),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.tabBarActiveContainer : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isActive ? tab.activeIcon : tab.icon,
-              color: isActive ? AppColors.tabBarActive : AppColors.tabBarInactive,
-              size: 22,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => context.go(tab.path),
+        child: Center(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+              color: isActive ? AppColors.tabBarActiveContainer : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
             ),
-            const SizedBox(height: 3),
-            Text(
-              tab.label,
-              style: GoogleFonts.inter(
-                fontSize: 10,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                color: isActive ? AppColors.tabBarActive : AppColors.tabBarInactive,
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isActive ? tab.activeIcon : tab.icon,
+                  color: isActive ? AppColors.tabBarActive : AppColors.tabBarInactive,
+                  size: 22,
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  tab.label,
+                  style: GoogleFonts.inter(
+                    fontSize: 10,
+                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                    color: isActive ? AppColors.tabBarActive : AppColors.tabBarInactive,
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

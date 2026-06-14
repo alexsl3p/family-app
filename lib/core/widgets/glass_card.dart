@@ -32,12 +32,17 @@ class GlassCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: bg,
             borderRadius: BorderRadius.circular(borderRadius),
-            border: Border.all(color: AppColors.glassBorder, width: 1),
+            border: Border.all(color: const Color(0x28FFFFFF), width: 1),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.40),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
+                color: Colors.black.withOpacity(0.50),
+                blurRadius: 32,
+                offset: const Offset(0, 12),
+              ),
+              BoxShadow(
+                color: const Color(0xFF8B35FF).withOpacity(0.06),
+                blurRadius: 16,
+                offset: const Offset(0, 0),
               ),
             ],
           ),

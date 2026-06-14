@@ -11,32 +11,48 @@ class ScreenBackground extends StatelessWidget {
       children: [
         // Base background
         Container(color: AppColors.bg),
-        // Purple glow — top left
+        // Purple orb — top left
         Positioned(
-          top: -80, left: -60,
+          top: -100, left: -80,
           child: Container(
-            width: 300, height: 300,
+            width: 380, height: 380,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  const Color(0xFF8B35FF).withOpacity(0.18),
+                  const Color(0xFF8B35FF).withOpacity(0.28),
                   Colors.transparent,
                 ],
               ),
             ),
           ),
         ),
-        // Blue glow — bottom right
+        // Pink orb — top right
         Positioned(
-          bottom: 60, right: -50,
+          top: 60, right: -60,
           child: Container(
-            width: 220, height: 220,
+            width: 200, height: 200,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  const Color(0xFF5B9DFF).withOpacity(0.12),
+                  const Color(0xFFF48DD2).withOpacity(0.14),
+                  Colors.transparent,
+                ],
+              ),
+            ),
+          ),
+        ),
+        // Blue orb — bottom right
+        Positioned(
+          bottom: 80, right: -40,
+          child: Container(
+            width: 260, height: 260,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: RadialGradient(
+                colors: [
+                  const Color(0xFF5B9DFF).withOpacity(0.18),
                   Colors.transparent,
                 ],
               ),
