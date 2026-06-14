@@ -43,3 +43,12 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Environment variables (never commit secrets)
+.env
+.env.*
+
+# Node / React Native / Expo leftovers on this branch
+node_modules/
+.expo/
+dist/
